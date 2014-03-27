@@ -70,9 +70,7 @@
   };
 
   function drawLines() {
-    var i;
-    for (i = 0; i < columns.length; i++)
-      drawColumn(i);
+    _.each(_.range(columns.length), drawColumn);
   };
 
   function drawColumn(index) {
@@ -80,11 +78,8 @@
   };
 
   function drawOverviews() {
-    var i;
-    for (i = 0; i < columns.length; i++) {
-      drawOverview(i, 0, columnValues.all(i), datastripes.Y_SUMMARY);
-      drawOverview(i, 1, columnValues.selected(i), datastripes.Y_SELECTION_SUMMARY);
-    }
+    _.each(_.range(columns.length), function(i) {drawOverview(i, 0, columnValues.all(i), datastripes.Y_SUMMARY);});
+    _.each(_.range(columns.length), function(i) {drawOverview(i, 1, columnValues.selected(i), datastripes.Y_SELECTION_SUMMARY);});
   };
 
   function drawOverview(column, overviewIndex, histogramValues, y1) {
@@ -92,11 +87,8 @@
   };
 
   function makeOverviewBrushes() {
-    var i;
-    for (i = 0; i < columns.length; i++) {
-      brushes.makeTotalOverviewBrush(columnValues, overviews, i, datastripes.Y_SUMMARY, drawOverviews);
-      brushes.makeSelectionOverviewBrush(columnValues, overviews, i, datastripes.Y_SELECTION_SUMMARY, drawOverviews);
-    }
+    _.each(_.range(columns.length), function(i) {brushes.makeTotalOverviewBrush(columnValues, overviews, i, datastripes.Y_SUMMARY, drawOverviews);});
+    _.each(_.range(columns.length), function(i) {brushes.makeSelectionOverviewBrush(columnValues, overviews, i, datastripes.Y_SELECTION_SUMMARY, drawOverviews);});
   }
 
 }(window.datastripes));
