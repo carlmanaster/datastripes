@@ -22,26 +22,15 @@
     },
   
     columns: function(root) {
-      var i
-      ,   columns = [];
-  
-      for (i = 0; i < datastripes.COLUMNS; i ++) {
-        columns[i] = root.append("svg");
-      }
-      return columns;
+      return this.oneNewSvgPerColumn(root);
     },
     
     overviews: function(root) {
-      var i
-      ,   overviews = [];
-  
-      overviews[0] = [];
-      overviews[1] = [];
-      for (i = 0; i < datastripes.COLUMNS; i ++) {
-        overviews[0][i] = root.append("svg");
-        overviews[1][i] = root.append("svg");
-      }
-      return overviews;
+      return [this.oneNewSvgPerColumn(root), this.oneNewSvgPerColumn(root)];
+    },
+
+    oneNewSvgPerColumn: function(root) {
+      return _.map(_.range(datastripes.COLUMNS), function() {return root.append("svg");});
     }
   
   });
