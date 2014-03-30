@@ -13,7 +13,7 @@ At the top of each column are two histograms. The top histogram represents the d
 
 # Origins
 
-The core idea of datastripes comes from Ramana Rao's [Table Lens](http://www.ramanarao.com/papers/tablelens-chi94.pdf).  Back in 2003 I implemented a version in C++ for the then-current Mac OS, but that hasn't worked for several years.  Recently I was introduced to Mike Bostock's fantastic javascript visualization library, [d3.js](http://d3js.org/), and reimplemented datastripes in javascript; this code is the result
+The core idea of datastripes comes from Ramana Rao's [Table Lens](http://www.ramanarao.com/papers/tablelens-chi94.pdf).  Back in 2003 I implemented a version in C++ for the then-current Mac OS, but that hasn't worked for several years.  Recently I was introduced to Mike Bostock's fantastic javascript visualization library, [d3.js](http://d3js.org/), and reimplemented datastripes in javascript; this code is the result.
 
 # Code
 
