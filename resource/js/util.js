@@ -23,8 +23,6 @@
     },
   
     sortByColumn: function(dataset, column) {
-      var i;
-  
       dataset.sort(function(a, b) { 
         var valueA = a.data[column]
         ,   valueB = b.data[column];
@@ -34,11 +32,8 @@
         return d3.ascending(valueA, valueB);
       });
   
-      for (i = 0; i < dataset.length; i++) {
-        dataset[i].index = i;
-      }
+      _.each(dataset, function(item, index) {item.index = index});
     }
-  
   
   });
 
