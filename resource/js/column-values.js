@@ -12,23 +12,17 @@
   _.extend(ColumnValues.prototype, {
   
     all: function(column) {
-      var i
-      ,   result = [];
-      
-      for (i = 0; i < this.dataset.length; i++) 
-        if (this.dataset[i].data[column] != null)
-          result.push(this.dataset[i].data[column]);
-      return result;
+      var result = _.map(this.dataset, function(item) {return item.data[column];});
+      return this.nonNull(result);
     },
   
     selected: function(column) {
-      var i
-      ,   result = [];
-      
-      for (i = 0; i < this.dataset.length; i++)
-        if (this.dataset[i].selected == true && this.dataset[i].data[column] != null)
-          result.push(this.dataset[i].data[column]);
-      return result;
+      var result = _.map(this.dataset, function(item) {return item.selected ? item.data[column] : null;});
+      return this.nonNull(result);
+    },
+
+    nonNull: function(values) {
+      return _.filter(values, function(value) {return value != null;});
     }
   
   });
