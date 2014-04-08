@@ -32,7 +32,7 @@
   var columnValues  = new datastripes.ColumnValues(dataset)
   ,   dataset       = util.instrumentDataset(dataset)
   ,   draw          = new datastripes.Draw(dataset, highlightPane, columns)
-  ,   numericCharts = new datastripes.NumericCharts(dataset, columns, overviews)
+  ,   charts        = makeCharts(dataset, columns, overviews)
   ,   brushes       = new datastripes.Brushes(dataset, draw);
 
   drawColumnHeaders();
@@ -53,9 +53,13 @@
                  .attr("y", datastripes.Y_MIN)
                  .attr("width", columns.length * datastripes.COLUMN_WIDTH);
 
+  function makeCharts(dataset, columns, overviews) {
+    return _.map(_.range(columns.length), function(i) { return new datastripes.NumericCharts(dataset, columns, overviews, i); });
+  }
+
   function drawColumnHeaders() {
     var headers = root.selectAll("text")
-                      .data(columnNames, function(d) {return d;});
+                      .data(columnNames, function(d) { return d; });
     headers.enter()
            .append("text")
            .attr("x", function(a, i) { return geometry.columnStart(i); })
@@ -74,7 +78,7 @@
   };
 
   function drawColumn(index) {
-    numericCharts.drawColumn(index);
+    charts[index].drawColumn();
   };
 
   function drawOverviews() {
@@ -82,8 +86,8 @@
     _.each(_.range(columns.length), function(i) {drawOverview(i, 1, columnValues.selected(i), datastripes.Y_SELECTION_SUMMARY);});
   };
 
-  function drawOverview(column, overviewIndex, histogramValues, y1) {
-  	numericCharts.drawOverview(column, overviewIndex, histogramValues, y1);
+  function drawOverview(index, overviewIndex, histogramValues, y1) {
+  	charts[index].drawOverview(overviewIndex, histogramValues, y1);
   };
 
   function makeOverviewBrushes() {

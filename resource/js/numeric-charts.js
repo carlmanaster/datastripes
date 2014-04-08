@@ -3,36 +3,38 @@
   // Export "package"
   datastripes.NumericCharts = NumericCharts;
   
-  var math          = new datastripes.MathUtil();
-  var geometry      = new datastripes.Geometry();
+  var math     = new datastripes.MathUtil();
+  var geometry = new datastripes.Geometry();
 
   // Constructor
-  function NumericCharts(dataset, columns, overviews) {
+  function NumericCharts(dataset, columns, overviews, index) {
     this.dataset      = dataset;
     this.columns      = columns;
-    this.overviews    = overviews;    
+    this.overviews    = overviews;
+    this.index        = index;
     this.columnValues = new datastripes.ColumnValues(dataset);
   }
 
   // Methods
   _.extend(NumericCharts.prototype, {
   
-    drawColumn: function(index) {
-      var x1     = geometry.columnStart(index)
+    drawColumn: function() {
+      var self   = this
+      ,   x1     = geometry.columnStart(self.index)
       ,   x2     = x1 + datastripes.COLUMN_WIDTH
-      ,   column = this.columns[index]
+      ,   column = this.columns[self.index]
       ,   lines  = column.selectAll("line")
                          .data(this.dataset, function(d) { return d.data; })
-      ,   extent = d3.extent(this.dataset, function(a) { return a.data[index]; })
+      ,   extent = d3.extent(this.dataset, function(a) { return a.data[self.index]; })
       ,   scale  = d3.scale.linear()
                    .domain(extent)
                    .range([x1, x2]);
   
       lines.enter()
            .append("line")
-           .attr("stroke", function(a)  { return math.isNumber(a.data[index]) ? datastripes.BAR_COLOR : datastripes.NULL_COLOR; })
+           .attr("stroke", function(a)  { return math.isNumber(a.data[self.index]) ? datastripes.BAR_COLOR : datastripes.NULL_COLOR; })
            .attr("x1",     scale(extent[0]))
-           .attr("x2",     function(a)  { return math.isNumber(a.data[index]) ? scale(a.data[index]) : scale(extent[1]); });
+           .attr("x2",     function(a)  { return math.isNumber(a.data[self.index]) ? scale(a.data[self.index]) : scale(extent[1]); });
   
       lines.transition()
            .duration(datastripes.SORT_ANIMATION_DURATION)
@@ -48,18 +50,18 @@
                (values)
     },
   
-    drawOverview: function(column, overviewIndex, histogramValues, y1) {
-      var all        = this.columnValues.all(column)
+    drawOverview: function(overviewIndex, histogramValues, y1) {
+      var all        = this.columnValues.all(this.index)
       ,   all_hist   = this.histogramChart(all, all)
       ,   histogram  = this.histogramChart(all, histogramValues)
-      ,   x1         = geometry.columnStart(column)
+      ,   x1         = geometry.columnStart(this.index)
       ,   x2         = x1 + datastripes.COLUMN_WIDTH
       ,   y2         = y1 + datastripes.SUMMARY_HEIGHT
       ,   extent     = d3.extent(all_hist, function(d) { return d.y; })
       ,   scale      = d3.scale.linear()
                          .domain([0, extent[1]])
                          .range([0, datastripes.SUMMARY_HEIGHT])
-      ,   overview   = this.overviews[overviewIndex][column]
+      ,   overview   = this.overviews[overviewIndex][this.index]
       ,   barWidth   = (datastripes.COLUMN_WIDTH - 1) / datastripes.HISTOGRAM_BINS
       ,   bars       = overview.selectAll("rect")
                                .data(histogram)
