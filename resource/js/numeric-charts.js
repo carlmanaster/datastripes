@@ -9,7 +9,7 @@
   // Constructor
   function NumericCharts(dataset, columns, overviews, index) {
     this.dataset      = dataset;
-    this.columns      = columns;
+    this.column       = columns[index];
     this.overviews    = overviews;
     this.index        = index;
     this.columnValues = new datastripes.ColumnValues(dataset);
@@ -19,22 +19,21 @@
   _.extend(NumericCharts.prototype, {
   
     drawColumn: function() {
-      var self   = this
-      ,   x1     = geometry.columnStart(self.index)
+      var index  = this.index
+      ,   x1     = geometry.columnStart(index)
       ,   x2     = x1 + datastripes.COLUMN_WIDTH
-      ,   column = this.columns[self.index]
-      ,   lines  = column.selectAll("line")
-                         .data(this.dataset, function(d) { return d.data; })
-      ,   extent = d3.extent(this.dataset, function(a) { return a.data[self.index]; })
+      ,   lines  = this.column.selectAll("line")
+                              .data(this.dataset, function(d) { return d.data; })
+      ,   extent = d3.extent(this.dataset, function(a) { return a.data[index]; })
       ,   scale  = d3.scale.linear()
                    .domain(extent)
                    .range([x1, x2]);
   
       lines.enter()
            .append("line")
-           .attr("stroke", function(a)  { return math.isNumber(a.data[self.index]) ? datastripes.BAR_COLOR : datastripes.NULL_COLOR; })
+           .attr("stroke", function(a)  { return math.isNumber(a.data[index]) ? datastripes.BAR_COLOR : datastripes.NULL_COLOR; })
            .attr("x1",     scale(extent[0]))
-           .attr("x2",     function(a)  { return math.isNumber(a.data[self.index]) ? scale(a.data[self.index]) : scale(extent[1]); });
+           .attr("x2",     function(a)  { return math.isNumber(a.data[index]) ? scale(a.data[index]) : scale(extent[1]); });
   
       lines.transition()
            .duration(datastripes.SORT_ANIMATION_DURATION)
