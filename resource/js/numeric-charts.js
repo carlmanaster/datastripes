@@ -54,7 +54,6 @@
       ,   all_hist   = this.histogramChart(all, all)
       ,   histogram  = this.histogramChart(all, histogramValues)
       ,   x1         = geometry.columnStart(this.index)
-      ,   x2         = x1 + datastripes.COLUMN_WIDTH
       ,   y2         = y1 + datastripes.SUMMARY_HEIGHT
       ,   extent     = d3.extent(all_hist, function(d) { return d.y; })
       ,   scale      = d3.scale.linear()
@@ -63,16 +62,7 @@
       ,   overview   = this.overviews[overviewIndex][this.index]
       ,   barWidth   = (datastripes.COLUMN_WIDTH - 1) / datastripes.HISTOGRAM_BINS
       ,   bars       = overview.selectAll("rect")
-                               .data(histogram)
-      ,   statData   = histogramValues.length == 0 ? all : histogramValues
-      ,   stat       = [d3.mean(statData)]
-      ,   xScale     = d3.scale.linear()
-                         .domain(d3.extent(all))
-                         .range([x1, x2])
-      ,   line       = overview.selectAll("line")
-                               .data(stat)
-      ,   inRange    = isNaN(stat[0]) || Math.abs(d3.mean(all) - stat[0]) < math.standardDeviation(all);
-      
+                               .data(histogram);      
       bars.enter().append("rect")
           .attr("x",      function(d, i) { return x1 + i * barWidth; })
           .attr("width",  barWidth)
@@ -80,6 +70,23 @@
       bars.transition()
           .attr("height", function(d) { return scale(d.length); })
           .attr("y",      function(d) { return y2 - scale(d.length); })
+      this.drawMean(overviewIndex, histogramValues, y1);
+    },
+  
+    drawMean: function(overviewIndex, histogramValues, y1) {
+      var all        = this.columnValues.all(this.index)
+      ,   x1         = geometry.columnStart(this.index)
+      ,   x2         = x1 + datastripes.COLUMN_WIDTH
+      ,   xScale     = d3.scale.linear()
+                         .domain(d3.extent(all))
+                         .range([x1, x2])
+      ,   statData   = histogramValues.length == 0 ? all : histogramValues
+      ,   stat       = [d3.mean(statData)]
+      ,   y2         = y1 + datastripes.SUMMARY_HEIGHT
+      ,   overview   = this.overviews[overviewIndex][this.index]
+      ,   line       = overview.selectAll("line")
+                               .data(stat)
+      ,   inRange    = isNaN(stat[0]) || Math.abs(d3.mean(all) - stat[0]) < math.standardDeviation(all);
       line.enter().append("line")
           .attr("y1",     y1)
           .attr("y2",     y2)
