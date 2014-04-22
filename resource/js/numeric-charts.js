@@ -31,9 +31,9 @@
   
       lines.enter()
            .append("line")
-           .attr("stroke", function(a)  { return math.isNumber(a.data[index]) ? datastripes.BAR_COLOR : datastripes.NULL_COLOR; })
+           .attr("stroke", function(a)  { return _.isNull(a.data[index]) ? datastripes.NULL_COLOR : datastripes.BAR_COLOR; })
            .attr("x1",     scale(extent[0]))
-           .attr("x2",     function(a)  { return math.isNumber(a.data[index]) ? scale(a.data[index]) : scale(extent[1]); });
+           .attr("x2",     function(a)  { return _.isNull(a.data[index]) ? scale(extent[1]) : scale(a.data[index]); });
   
       lines.transition()
            .duration(datastripes.SORT_ANIMATION_DURATION)
@@ -70,10 +70,10 @@
       bars.transition()
           .attr("height", function(d) { return scale(d.length); })
           .attr("y",      function(d) { return y2 - scale(d.length); })
-      this.drawMean(overviewIndex, histogramValues, y1);
+      this.drawMean(overview, histogramValues, y1);
     },
   
-    drawMean: function(overviewIndex, histogramValues, y1) {
+    drawMean: function(overview, histogramValues, y1) {
       var all        = this.columnValues.all(this.index)
       ,   x1         = geometry.columnStart(this.index)
       ,   x2         = x1 + datastripes.COLUMN_WIDTH
@@ -83,7 +83,6 @@
       ,   statData   = histogramValues.length == 0 ? all : histogramValues
       ,   stat       = [d3.mean(statData)]
       ,   y2         = y1 + datastripes.SUMMARY_HEIGHT
-      ,   overview   = this.overviews[overviewIndex][this.index]
       ,   line       = overview.selectAll("line")
                                .data(stat)
       ,   inRange    = isNaN(stat[0]) || Math.abs(d3.mean(all) - stat[0]) < math.standardDeviation(all);
