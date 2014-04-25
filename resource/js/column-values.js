@@ -22,7 +22,7 @@
     },
 
     nonNull: function(values) {
-      return _.filter(values, function(value) {return value != null;});
+      return _.filter(values, function(value) {return !_.isNull(value);});
     }
   
   });
