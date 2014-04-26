@@ -30,7 +30,7 @@
     },
 
     oneNewSvgPerColumn: function(root) {
-      return _.map(_.range(datastripes.COLUMNS), function() {return root.append("svg");});
+      return _.map(_.range(datastripes.COLUMNS + 1), function() {return root.append("svg");});
     }
   
   });

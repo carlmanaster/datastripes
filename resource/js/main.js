@@ -14,11 +14,12 @@
 (function (datastripes) {
 
   var geometry      = new datastripes.Geometry()
-  ,   util          = new datastripes.Util();
+  ,   util          = new datastripes.Util()
+  ,   classifier    = new datastripes.ColumnClassifier();
   
   var generator     = new datastripes.DataGenerator({
 							rows    : datastripes.ROWS,
-							columns : datastripes.COLUMNS
+							columns : datastripes.COLUMNS + 1
 						  })
   ,   dataset       = generator.makeRandomCorrelatedDatasetWithNulls()
   ,   columnNames   = generator.makeColumnNames();
@@ -54,7 +55,14 @@
                  .attr("width", columns.length * datastripes.COLUMN_WIDTH);
 
   function makeCharts(dataset, columns, overviews) {
-    return _.map(_.range(columns.length), function(i) { return new datastripes.NumericCharts(dataset, columns, overviews, i); });
+    return _.map(_.range(columns.length), function(i) {
+      var values = _.map(dataset, function(item) {return item.data[i];});
+
+      switch (classifier.classify(values)) {
+        case "numeric" : return new datastripes.NumericCharts(dataset, columns, overviews, i);
+        case "ordinal" : return new datastripes.OrdinalCharts(dataset, columns, overviews, i);
+      }
+    });
   }
 
   function drawColumnHeaders() {

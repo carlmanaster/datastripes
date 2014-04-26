@@ -9,6 +9,8 @@
       rows    : 0,
       columns : 0
     }, options);
+    this.options.numericColumns = this.options.columns;
+    this.options.columns++; 
   }
 
   // Methods
@@ -33,10 +35,16 @@
     makeRandomRow: function () {
       var result = [],
           i;
-      for (i = 0; i < this.options.columns; i++) {
+      for (i = 0; i < this.options.columns ; i++) {
         result[i] = Math.random();
       }
+      result[this.options.columns - 1] = this.randomColor();
+      result[this.options.columns - 2] = this.randomColor();
       return result;
+    },
+    
+    randomColor: function() {
+      return ["red", "yellow", "green", "blue"][Math.floor(Math.random() * 4)];
     },
 
     introduceCorrelation: function () {
@@ -51,9 +59,9 @@
       var row,
           column,
           i;
-      for (i = 0; i < 50; i++) {
+      for (i = 0; i < 100; i++) {
         row    = Math.floor(Math.random() * this.options.rows);
-        column = Math.floor(Math.random() * this.options.columns);
+        column = Math.floor(Math.random() * (this.options.columns + 1));
         this.dataset[row][column] = null;
       }      
     }, 
@@ -61,8 +69,9 @@
     makeColumnNames: function() {
     var i
     ,   result = [];
-    for (i = 0; i < this.options.columns; i++)
+    for (i = 0; i < this.options.columns - 1; i++)
       result[i] = "Column " + (i + 1);
+    result[6] = "Ordinal"
     return result;
   }
 
