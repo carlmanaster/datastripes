@@ -13,6 +13,14 @@
     this.overviews    = overviews;
     this.index        = index;
     this.columnValues = new datastripes.ColumnValues(dataset);
+    this.x1           = geometry.columnStart(this.index);
+    this.x2           = this.x1 + datastripes.COLUMN_WIDTH;
+    this.extent       = d3.extent(this.dataset, function(a) { return a.data[this.index]; });
+    this.all          = this.columnValues.all(this.index);
+
+    this.scale        = d3.scale.ordinal()
+                                .domain(_.uniq(this.all).sort())
+                                .rangeRoundBands([this.x1, this.x2], 0.05, 0.05);
   }
 
   // Methods
@@ -20,21 +28,13 @@
   
     drawColumn: function() {
       var self   = this
-      ,   x1     = geometry.columnStart(self.index)
-      ,   x2     = x1 + datastripes.COLUMN_WIDTH
       ,   lines  = this.column.selectAll("line")
-                              .data(this.dataset, function(d) { return d.data; })
-      ,   extent = d3.extent(this.dataset, function(a) { return a.data[self.index]; })
-      ,   scale  = d3.scale.ordinal()
-                      .domain(["blue", "green", "red", "yellow"])
-                      .rangeRoundBands([x1, x2], 0.1, 0.1);
-  
+                              .data(this.dataset, function(d) { return d.data; });
       lines.enter()
            .append("line")
            .attr("stroke", function(a)  { return _.isNull(a.data[self.index]) ? datastripes.NULL_COLOR : datastripes.BAR_COLOR; })
-
-           .attr("x1",     function(a)  { return _.isNull(a.data[self.index]) ? x1                     : scale(a.data[self.index]); })
-           .attr("x2",     function(a)  { return _.isNull(a.data[self.index]) ? x2                     : scale(a.data[self.index]) + scale.rangeBand(); });
+           .attr("x1",     function(a)  { return _.isNull(a.data[self.index]) ? self.x1                : self.scale(a.data[self.index]); })
+           .attr("x2",     function(a)  { return _.isNull(a.data[self.index]) ? self.x2                : self.scale(a.data[self.index]) + self.scale.rangeBand(); });
   
       lines.transition()
            .duration(datastripes.SORT_ANIMATION_DURATION)
