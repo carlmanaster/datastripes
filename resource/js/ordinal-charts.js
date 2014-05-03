@@ -15,11 +15,10 @@
     this.columnValues = new datastripes.ColumnValues(dataset);
     this.x1           = geometry.columnStart(this.index);
     this.x2           = this.x1 + datastripes.COLUMN_WIDTH;
-    this.extent       = d3.extent(this.dataset, function(a) { return a.data[this.index]; });
     this.all          = this.columnValues.all(this.index);
-
+    this.values       = _.uniq(this.all).sort();
     this.scale        = d3.scale.ordinal()
-                                .domain(_.uniq(this.all).sort())
+                                .domain(this.values)
                                 .rangeRoundBands([this.x1, this.x2], 0.05, 0.05);
   }
 
@@ -42,53 +41,38 @@
            .attr("y2", function(a, i) { return datastripes.Y_MIN + i; });
     },
     
-    histogramChart: function(all, values) {
-      return d3.layout.histogram()
-               .bins(datastripes.HISTOGRAM_BINS)
-               .range(d3.extent(all))
-               .frequency(true)
-               (values)
+    frequencies: function(values) {
+      var map = {}
+      ,   result = []
+      ,   i;
+      this.values.forEach( function(k) {map[k] = 0;} );
+      values.forEach(      function(k) {map[k]++; } );
+      for (i = 0; i < this.values.length; i++) {
+        result[i] = map[this.values[i]];
+      }
+      return result;
     },
   
     drawOverview: function(overviewIndex, histogramValues, y1) {
-      var all        = this.columnValues.all(this.index)
-      ,   all_hist   = this.histogramChart(all, all)
-      ,   histogram  = this.histogramChart(all, histogramValues)
-      ,   x1         = geometry.columnStart(this.index)
-      ,   x2         = x1 + datastripes.COLUMN_WIDTH
+      var self       = this
+      ,   all        = this.all
+      ,   all_freq   = this.frequencies(all)
+      ,   freq       = this.frequencies(histogramValues)
       ,   y2         = y1 + datastripes.SUMMARY_HEIGHT
-      ,   extent     = d3.extent(all_hist, function(d) { return d.y; })
-      ,   scale      = d3.scale.linear()
-                         .domain([0, extent[1]])
+      ,   yscale     = d3.scale.linear()
+                         .domain([0, d3.max(all_freq)])
                          .range([0, datastripes.SUMMARY_HEIGHT])
       ,   overview   = this.overviews[overviewIndex][this.index]
-      ,   barWidth   = (datastripes.COLUMN_WIDTH - 1) / datastripes.HISTOGRAM_BINS
+      ,   barWidth   = this.scale.rangeBand()
       ,   bars       = overview.selectAll("rect")
-                               .data(histogram)
-      ,   statData   = histogramValues.length == 0 ? all : histogramValues
-      ,   stat       = [d3.mean(statData)]
-      ,   xScale     = d3.scale.linear()
-                         .domain(d3.extent(all))
-                         .range([x1, x2])
-      ,   line       = overview.selectAll("line")
-                               .data(stat)
-      ,   inRange    = isNaN(stat[0]) || Math.abs(d3.mean(all) - stat[0]) < math.standardDeviation(all);
-      
-      // bars.enter().append("rect")
-      //     .attr("x",      function(d, i) { return x1 + i * barWidth; })
-      //     .attr("width",  barWidth)
-      //     .attr("fill",   datastripes.HISTOGRAM_COLOR);
-      // bars.transition()
-      //     .attr("height", function(d) { return scale(d.length); })
-      //     .attr("y",      function(d) { return y2 - scale(d.length); })
-      // line.enter().append("line")
-      //     .attr("y1",     y1)
-      //     .attr("y2",     y2)
-      //     .attr("stroke", datastripes.MEAN_COLOR);
-      // line.transition()
-      //     .attr("x1",     function(d) { return xScale(d); })
-      //     .attr("x2",     function(d) { return xScale(d); })
-      //     .attr("stroke", function(d) { return inRange == true ? datastripes.MEAN_COLOR : datastripes.OUTLIER_MEAN_COLOR; }); 
+                               .data(freq);      
+      bars.enter().append("rect")
+          .attr("x",      function(d, i) { return self.scale(self.values[i]); })
+          .attr("width",  barWidth)
+          .attr("fill",   datastripes.HISTOGRAM_COLOR);
+      bars.transition()
+          .attr("height", function(d) { return yscale(d); })
+          .attr("y",      function(d) { return y2 - yscale(d); })
     }
   
   });

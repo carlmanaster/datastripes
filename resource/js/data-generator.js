@@ -44,7 +44,7 @@
     },
     
     randomColor: function() {
-      return ["red", "yellow", "green", "blue"][Math.floor(Math.random() * 4)];
+      return ["red", "yellow", "green", "blue", "red"][Math.floor(Math.random() * 5)];
     },
 
     introduceCorrelation: function () {
