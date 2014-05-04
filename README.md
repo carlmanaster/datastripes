@@ -29,5 +29,5 @@ Future plans for this code base include:
 
 # Requirements
 
-To make this work, you'll need both [d3.js](https://github.com/mbostock/d3/releases) and [underscore.js](http://underscorejs.org/).  The html file expects to find those files in resource/js/vendor/.
+Datastripes uses [d3.js](https://github.com/mbostock/d3/releases) and [underscore.js](http://underscorejs.org/).  It uses those resources over the internet, but you may prefer to store local copies in resource/js/vendor/.
 
