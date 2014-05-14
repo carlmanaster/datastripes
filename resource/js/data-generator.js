@@ -38,7 +38,6 @@
       for (i = 0; i < this.options.columns ; i++) {
         result[i] = Math.random();
       }
-      result[this.options.columns - 1] = this.randomColor();
       result[this.options.columns - 2] = this.randomColor();
       return result;
     },

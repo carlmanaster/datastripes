@@ -22,7 +22,6 @@ The current state of the code is this: it demonstrates the functionality describ
 If you want to use this code on your own data, you'll have to write a little javascript code to bring in that data; someday I'll introduce that functionality, but not yet.
 
 Future plans for this code base include:
- - support for non-numeric data
  - support for binary data
  - ability to import your own data
  - hover to provide more information

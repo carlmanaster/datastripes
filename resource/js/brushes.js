@@ -69,57 +69,134 @@
                         .on("brushend",   function() { self.brushEnd(brush, drawOverviews); });
       return brush;
     },
+
+    makeOverviewXScale: function(domain, column) {
+      var x1 = geometry.columnStart(column)
+      ,   x2 = x1 + datastripes.COLUMN_WIDTH
+      return d3.scale.linear()
+               .range([x1, x2])
+               .domain(domain);
+    },
+
+    makeGraphic: function(overview, brush, x1, y1) {
+      return overview.append("g")
+                    .attr("class", "brush")
+                    .attr("opacity", 0)
+                    .call(brush)
+                    .selectAll("rect")
+                    .attr("x", x1)
+                    .attr("y", y1)
+                    .attr("width", datastripes.COLUMN_WIDTH)
+                    .attr("height", datastripes.SUMMARY_HEIGHT);
+    },
     
-    makeTotalOverviewBrush: function (columnValues, overviews, column, y1, drawOverviews) {
+    makeTotalOverviewNumericBrush: function (columnValues, overviews, column, y1, drawOverviews) {
       var self     = this
-      ,   all      = columnValues.all(column)
-      ,   domain   = d3.extent(all)
+      ,   domain   = d3.extent(columnValues.all(column))
       ,   overview = overviews[0][column]
       ,   x1       = geometry.columnStart(column)
-      ,   x2       = x1 + datastripes.COLUMN_WIDTH
-      ,   x        = d3.scale.linear()
-                       .range([x1, x2])
-                       .domain(domain)
-      ,   brush    = d3.svg.brush().x(x)
+      ,   xScale   = this.makeOverviewXScale(domain, column)
+      ,   brush    = d3.svg.brush().x(xScale)
                        .on("brushstart", function() { self.brushStart(); })
                        .on("brush",      function() { self.totalOverviewBrushing(column, brush, domain, drawOverviews); })
-                       .on("brushend",   function() { self.totalOverviewBrushEnd(column, brush, domain, 0, overviews, drawOverviews); })
-      ,   g        = overview.append("g")
-                             .attr("class", "brush")
-                             .attr("opacity", 0)
-                             .call(brush)
-                             .selectAll("rect")
-                             .attr("x", x1)
-                             .attr("y", y1)
-                             .attr("width", datastripes.COLUMN_WIDTH)
-                             .attr("height", datastripes.SUMMARY_HEIGHT);
+                       .on("brushend",   function() { self.totalOverviewBrushEnd(column, brush, domain, 0, overviews, drawOverviews); });
+      this.makeGraphic(overview, brush, x1, y1);
       overview.selectAll(".brush").call(brush.clear());
     },
     
-    makeSelectionOverviewBrush: function(columnValues, overviews, column, y1, drawOverviews) {
+    makeSelectionOverviewNumericBrush: function(columnValues, overviews, column, y1, drawOverviews) {
       var self     = this
-      ,   all      = columnValues.all(column)
-      ,   domain   = d3.extent(all)
+      ,   domain   = d3.extent(columnValues.all(column))
       ,   overview = overviews[1][column]
       ,   x1       = geometry.columnStart(column)
-      ,   x2       = x1 + datastripes.COLUMN_WIDTH
-      ,   x        = d3.scale.linear()
-                       .range([x1, x2])
-                       .domain(domain)
-      ,   brush    = d3.svg.brush().x(x)
-                       .on("brushend", function() { self.selectionOverviewBrushEnd(column, brush, domain, 1, overviews, drawOverviews); })
-      ,   g        = overview.append("g")
-                             .attr("class", "brush")
-                             .attr("opacity", 0)
-                             .call(brush)
-                             .selectAll("rect")
-                             .attr("x", x1)
-                             .attr("y", y1)
-                             .attr("width", datastripes.COLUMN_WIDTH)
-                             .attr("height", datastripes.SUMMARY_HEIGHT);
+      ,   xScale   = this.makeOverviewXScale(domain, column)
+      ,   brush    = d3.svg.brush().x(xScale)
+                       .on("brushend", function() { self.selectionOverviewBrushEnd(column, brush, domain, 1, overviews, drawOverviews); });
+      this.makeGraphic(overview, brush, x1, y1);
       overview.selectAll(".brush").call(brush.clear());        
-    }
+    },
   
-  });
+    makeTotalOverviewOrdinalBrush: function (columnValues, overviews, column, y1, drawOverviews) {
+      var self     = this
+      ,   domain   = d3.extent(columnValues.all(column))
+      ,   overview = overviews[0][column]
+      ,   x1       = geometry.columnStart(column)
+      ,   xScale   = this.makeOrdinalOverviewXScale(domain, column)
+      ,   brush    = d3.svg.brush().x(xScale)
+                       .on("brushstart", function() { self.brushStart(); })
+                       .on("brush",      function() { self.totalOrdinalOverviewBrushing(columnValues, column, brush, drawOverviews); })
+                       .on("brushend",   function() { self.totalOrdinalOverviewBrushEnd(columnValues, column, brush, 0, overviews, drawOverviews); });
+      this.makeGraphic(overview, brush, x1, y1);
+      overview.selectAll(".brush").call(brush.clear());
+    },
+    
+    makeSelectionOverviewOrdinalBrush: function(columnValues, overviews, column, y1, drawOverviews) {
+      var self     = this
+      ,   domain   = d3.extent(columnValues.all(column))
+      ,   overview = overviews[1][column]
+      ,   x1       = geometry.columnStart(column)
+      ,   xScale   = this.makeOrdinalOverviewXScale(domain, column)
+      ,   brush    = d3.svg.brush().x(xScale)
+                       .on("brushend", function() { self.selectionOrdinalOverviewBrushEnd(columnValues, column, brush, 1, overviews, drawOverviews); });
+      this.makeGraphic(overview, brush, x1, y1);
+      overview.selectAll(".brush").call(brush.clear());        
+    },
+
+    makeOrdinalOverviewXScale: function(domain, column) {
+      var x1    = geometry.columnStart(column)
+      ,   x2    = x1 + datastripes.COLUMN_WIDTH
+      ,   scale = d3.scale.ordinal()
+                    .domain(domain)
+                    .rangeRoundBands([x1, x2], 0.05, 0.05);
+      return scale;
+    },
+
+    selectionOrdinalOverviewBrushEnd: function (columnValues, column, brush, overviewIndex, overviews, drawOverviews) {
+      var overview  = overviews[overviewIndex][column]
+      ,   bounds    = this.getOrdinalBounds(column, columnValues);
+      
+      this.select.selectedByValue(column, bounds[0], bounds[1]);
+      this.draw.drawSelection();
+      drawOverviews();
+      overview.selectAll(".brush").call(brush.clear());        
+    },
+
+    totalOrdinalOverviewBrushing: function(columnValues, column, brush, drawOverviews) {
+      var extent = brush.extent()
+      ,   bounds    = this.getOrdinalBounds(column, columnValues);
+      
+      this.select.byValue(column, bounds[0], bounds[1]);
+      this.draw.drawSelection();
+      drawOverviews();
+    },
+    
+    totalOrdinalOverviewBrushEnd: function (columnValues, column, brush, overviewIndex, overviews, drawOverviews) {
+      var overview  = overviews[overviewIndex][column]
+      ,   bounds    = this.getOrdinalBounds(column, columnValues);
+      
+      this.select.byValue(column, bounds[0], bounds[1]);
+      this.draw.drawSelection();
+      drawOverviews();
+      overview.selectAll(".brush").call(brush.clear());        
+    },
+  
+    getOrdinalBounds: function(column, columnValues) {
+      var extent = d3.event.target.extent()
+      ,   x1     = geometry.columnStart(column)
+      ,   x2     = x1 + datastripes.COLUMN_WIDTH
+      ,   keys   = _.uniq(columnValues.all(column)).sort()
+      ,   v1     = keys[Math.floor(keys.length * (extent[0] - x1) / (x2 - x1))]
+      ,   v2     = keys[Math.floor(keys.length * (extent[1] - x1) / (x2 - x1))]
+
+      return [v1, v2];
+    }
+
+
+
+  }
+
+  );
+
+    
 
 }(window.datastripes));

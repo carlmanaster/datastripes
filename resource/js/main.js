@@ -90,8 +90,15 @@
   };
 
   function drawOverviews() {
-    _.each(_.range(columns.length), function(i) {drawOverview(i, 0, columnValues.all(i), datastripes.Y_SUMMARY);});
-    _.each(_.range(columns.length), function(i) {drawOverview(i, 1, columnValues.selected(i), datastripes.Y_SELECTION_SUMMARY);});
+    _.each(_.range(columns.length), function(i) {drawOverviewBrushes(i);});
+  };
+
+  function drawOverviewBrushes(index) {
+    var all      = columnValues.all(index)
+    ,   selected = columnValues.selected(index);
+
+    drawOverview(index, 0, all,      datastripes.Y_SUMMARY);
+    drawOverview(index, 1, selected, datastripes.Y_SELECTION_SUMMARY);
   };
 
   function drawOverview(index, overviewIndex, histogramValues, y1) {
@@ -99,8 +106,23 @@
   };
 
   function makeOverviewBrushes() {
-    _.each(_.range(columns.length), function(i) {brushes.makeTotalOverviewBrush(columnValues, overviews, i, datastripes.Y_SUMMARY, drawOverviews);});
-    _.each(_.range(columns.length), function(i) {brushes.makeSelectionOverviewBrush(columnValues, overviews, i, datastripes.Y_SELECTION_SUMMARY, drawOverviews);});
+    _.each(_.range(columns.length), function(i) {makeBothOverviewBrushes(i);});
+  };
+
+  function makeBothOverviewBrushes(index) {
+    var all      = columnValues.all(index)
+    ,   selected = columnValues.selected(index);
+
+    switch (classifier.classify(all)) {
+      case "numeric" : 
+        brushes.makeTotalOverviewNumericBrush    (columnValues, overviews, index, datastripes.Y_SUMMARY, drawOverviews);
+        brushes.makeSelectionOverviewNumericBrush(columnValues, overviews, index, datastripes.Y_SELECTION_SUMMARY, drawOverviews);
+        break;
+      case "ordinal" : 
+        brushes.makeTotalOverviewOrdinalBrush    (columnValues, overviews, index, datastripes.Y_SUMMARY, drawOverviews);
+        brushes.makeSelectionOverviewOrdinalBrush(columnValues, overviews, index, datastripes.Y_SELECTION_SUMMARY, drawOverviews);
+        break;
+    }
   }
 
 }(window.datastripes));
