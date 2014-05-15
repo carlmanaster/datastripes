@@ -23,6 +23,10 @@
 
     nonNull: function(values) {
       return _.filter(values, function(value) {return !_.isNull(value);});
+    },
+  
+    keys: function(column) {
+      return _.uniq(this.all(column)).sort();
     }
   
   });

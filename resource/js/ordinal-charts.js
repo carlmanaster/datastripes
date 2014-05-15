@@ -16,9 +16,9 @@
     this.x1           = geometry.columnStart(this.index);
     this.x2           = this.x1 + datastripes.COLUMN_WIDTH;
     this.all          = this.columnValues.all(this.index);
-    this.values       = _.uniq(this.all).sort();
+    this.keys         = this.columnValues.keys(this.index);
     this.scale        = d3.scale.ordinal()
-                                .domain(this.values)
+                                .domain(this.keys)
                                 .rangeRoundBands([this.x1, this.x2], 0.05, 0.05);
   }
 
@@ -45,10 +45,10 @@
       var map = {}
       ,   result = []
       ,   i;
-      this.values.forEach( function(k) {map[k] = 0;} );
+      this.keys.forEach( function(k) {map[k] = 0;} );
       values.forEach(      function(k) {map[k]++; } );
-      for (i = 0; i < this.values.length; i++) {
-        result[i] = map[this.values[i]];
+      for (i = 0; i < this.keys.length; i++) {
+        result[i] = map[this.keys[i]];
       }
       return result;
     },
@@ -67,7 +67,7 @@
       ,   bars       = overview.selectAll("rect")
                                .data(freq);      
       bars.enter().append("rect")
-          .attr("x",      function(d, i) { return self.scale(self.values[i]); })
+          .attr("x",      function(d, i) { return self.scale(self.keys[i]); })
           .attr("width",  barWidth)
           .attr("fill",   datastripes.HISTOGRAM_COLOR);
       bars.transition()

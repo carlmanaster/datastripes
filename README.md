@@ -17,7 +17,7 @@ The core idea of datastripes comes from Ramana Rao's [Table Lens](http://www.ram
 
 # Code
 
-The current state of the code is this: it demonstrates the functionality described above.  The html file creates a randomized correlated dataset with six columns and two hundred rows; click on the column headings to detect correlations.
+The current state of the code is this: it demonstrates the functionality described above.  The html file creates a randomized correlated dataset with seven columns and two hundred rows; click on the column headings to detect correlations.
 
 If you want to use this code on your own data, you'll have to write a little javascript code to bring in that data; someday I'll introduce that functionality, but not yet.
 
