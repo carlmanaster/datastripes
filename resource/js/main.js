@@ -13,10 +13,6 @@
 
 (function (datastripes) {
 
-  var geometry      = new datastripes.Geometry()
-  ,   util          = new datastripes.Util()
-  ,   classifier    = new datastripes.ColumnClassifier();
-  
   var generator     = new datastripes.DataGenerator({
 							rows    : datastripes.ROWS,
 							columns : datastripes.COLUMNS + 1
@@ -24,14 +20,19 @@
   ,   dataset       = generator.makeRandomCorrelatedDatasetWithNulls()
   ,   columnNames   = generator.makeColumnNames();
 
+  var geometry      = new datastripes.Geometry()
+  ,   util          = new datastripes.Util()
+  ,   classifier    = new datastripes.ColumnClassifier();
+  
   var panes         = new datastripes.Panes(),
       root          = panes.root(),
       highlightPane = panes.highlightPane(root),
       columns       = panes.columns(root),
       overviews     = panes.overviews(root);
 
+  dataset = util.instrumentDataset(dataset)
+
   var columnValues  = new datastripes.ColumnValues(dataset)
-  ,   dataset       = util.instrumentDataset(dataset)
   ,   draw          = new datastripes.Draw(dataset, highlightPane, columns)
   ,   charts        = makeCharts(dataset, columns, overviews)
   ,   brushes       = new datastripes.Brushes(dataset, draw);
@@ -41,18 +42,22 @@
   makeOverviewBrushes();
   draw.drawSelection();
   drawLines();
+  makeRootGraphic();
 
-  var y    = d3.scale.linear()
-               .range([datastripes.HEIGHT + datastripes.Y_MIN, datastripes.Y_MIN])
-               .domain([datastripes.HEIGHT, 0])
-  ,  brush = brushes.makeDatasetBrush(y, drawOverviews)
-  ,  g     = root.append("g")
-                 .attr("opacity", 0)
-                 .call(brush)
-                 .selectAll("rect")
-                 .attr("x", 0)
-                 .attr("y", datastripes.Y_MIN)
-                 .attr("width", columns.length * datastripes.COLUMN_WIDTH);
+  function makeRootGraphic() {
+    var y    = d3.scale.linear()
+                 .range([datastripes.HEIGHT + datastripes.Y_MIN, datastripes.Y_MIN])
+                 .domain([datastripes.HEIGHT, 0])
+    ,  brush = brushes.makeDatasetBrush(y, drawOverviews);
+    
+    root.append("g")
+        .attr("opacity", 0)
+        .call(brush)
+        .selectAll("rect")
+        .attr("x", 0)
+        .attr("y", datastripes.Y_MIN)
+        .attr("width", columns.length * datastripes.COLUMN_WIDTH);
+  }
 
   function makeCharts(dataset, columns, overviews) {
     return _.map(_.range(columns.length), function(i) {
