@@ -20,58 +20,62 @@
   ,   dataset       = generator.makeRandomCorrelatedDatasetWithNulls()
   ,   columnNames   = generator.makeColumnNames();
 
-  var geometry      = new datastripes.Geometry()
-  ,   util          = new datastripes.Util()
-  ,   classifier    = new datastripes.ColumnClassifier();
-  
-  var panes         = new datastripes.Panes(),
-      root          = panes.root(),
-      highlightPane = panes.highlightPane(root),
-      columns       = panes.columns(root),
-      overviews     = panes.overviews(root);
+  init(dataset, columnNames);
 
-  dataset = util.instrumentDataset(dataset)
+  function init(dataset, columnNames) {
+    var geometry      = new datastripes.Geometry()
+    ,   util          = new datastripes.Util();
+    this.classifier    = new datastripes.ColumnClassifier();
+    
+    var panes         = new datastripes.Panes();
+    this.root          = panes.root();
+    var highlightPane = panes.highlightPane(this.root);
 
-  var columnValues  = new datastripes.ColumnValues(dataset)
-  ,   draw          = new datastripes.Draw(dataset, highlightPane, columns)
-  ,   charts        = makeCharts(dataset, columns, overviews)
-  ,   brushes       = new datastripes.Brushes(dataset, draw);
+    dataset = util.instrumentDataset(dataset);
+    this.columns       = panes.columns(root);
+    this.overviews     = panes.overviews(root);
+    this.columnValues  = new datastripes.ColumnValues(dataset);
+    this.charts        = makeCharts(dataset, overviews);
 
-  drawColumnHeaders();
-  drawOverviews();
-  makeOverviewBrushes();
-  draw.drawSelection();
-  drawLines();
-  makeRootGraphic();
+    var draw          = new datastripes.Draw(dataset, highlightPane, this.columns);
+    this.brushes       = new datastripes.Brushes(dataset, draw);
+
+    drawColumnHeaders(draw, columnNames, geometry, util);
+    drawOverviews();
+    makeOverviewBrushes();
+    draw.drawSelection();
+    drawLines();
+    makeRootGraphic();
+  }
 
   function makeRootGraphic() {
     var y    = d3.scale.linear()
                  .range([datastripes.HEIGHT + datastripes.Y_MIN, datastripes.Y_MIN])
                  .domain([datastripes.HEIGHT, 0])
-    ,  brush = brushes.makeDatasetBrush(y, drawOverviews);
+    ,  brush = this.brushes.makeDatasetBrush(y, drawOverviews);
     
-    root.append("g")
-        .attr("opacity", 0)
-        .call(brush)
-        .selectAll("rect")
-        .attr("x", 0)
-        .attr("y", datastripes.Y_MIN)
-        .attr("width", columns.length * datastripes.COLUMN_WIDTH);
+    this.root.append("g")
+             .attr("opacity", 0)
+             .call(brush)
+             .selectAll("rect")
+             .attr("x", 0)
+             .attr("y", datastripes.Y_MIN)
+             .attr("width", this.columns.length * datastripes.COLUMN_WIDTH);
   }
 
-  function makeCharts(dataset, columns, overviews) {
-    return _.map(_.range(columns.length), function(i) {
+  function makeCharts(dataset, overviews) {
+    return _.map(_.range(this.columns.length), function(i) {
       var values = _.map(dataset, function(item) {return item.data[i];});
 
-      switch (classifier.classify(values)) {
-        case "numeric" : return new datastripes.NumericCharts(dataset, columns, overviews, i);
-        case "ordinal" : return new datastripes.OrdinalCharts(dataset, columns, overviews, i);
+      switch (this.classifier.classify(values)) {
+        case "numeric" : return new datastripes.NumericCharts(dataset, this.columns, overviews, i);
+        case "ordinal" : return new datastripes.OrdinalCharts(dataset, this.columns, overviews, i);
       }
     });
   }
 
-  function drawColumnHeaders() {
-    var headers = root.selectAll("text")
+  function drawColumnHeaders(draw, columnNames, geometry, util) {
+    var headers = this.root.selectAll("text")
                       .data(columnNames, function(d) { return d; });
     headers.enter()
            .append("text")
@@ -87,45 +91,45 @@
   };
 
   function drawLines() {
-    _.each(_.range(columns.length), drawColumn);
+    _.each(_.range(this.columns.length), drawColumn);
   };
 
   function drawColumn(index) {
-    charts[index].drawColumn();
+    this.charts[index].drawColumn();
   };
 
   function drawOverviews() {
-    _.each(_.range(columns.length), function(i) {drawOverviewBrushes(i);});
+    _.each(_.range(this.columns.length), function(i) {drawOverviewBrushes(i);});
   };
 
   function drawOverviewBrushes(index) {
-    var all      = columnValues.all(index)
-    ,   selected = columnValues.selected(index);
+    var all      = this.columnValues.all(index)
+    ,   selected = this.columnValues.selected(index);
 
     drawOverview(index, 0, all,      datastripes.Y_SUMMARY);
     drawOverview(index, 1, selected, datastripes.Y_SELECTION_SUMMARY);
   };
 
   function drawOverview(index, overviewIndex, histogramValues, y1) {
-  	charts[index].drawOverview(overviewIndex, histogramValues, y1);
+  	this.charts[index].drawOverview(overviewIndex, histogramValues, y1);
   };
 
   function makeOverviewBrushes() {
-    _.each(_.range(columns.length), function(i) {makeBothOverviewBrushes(i);});
+    _.each(_.range(this.columns.length), function(i) {makeBothOverviewBrushes(i);});
   };
 
   function makeBothOverviewBrushes(index) {
-    var all      = columnValues.all(index)
-    ,   selected = columnValues.selected(index);
+    var all      = this.columnValues.all(index)
+    ,   selected = this.columnValues.selected(index);
 
-    switch (classifier.classify(all)) {
+    switch (this.classifier.classify(all)) {
       case "numeric" : 
-        brushes.makeTotalOverviewNumericBrush    (columnValues, overviews, index, datastripes.Y_SUMMARY, drawOverviews);
-        brushes.makeSelectionOverviewNumericBrush(columnValues, overviews, index, datastripes.Y_SELECTION_SUMMARY, drawOverviews);
+        this.brushes.makeTotalOverviewNumericBrush    (this.columnValues, overviews, index, datastripes.Y_SUMMARY, drawOverviews);
+        this.brushes.makeSelectionOverviewNumericBrush(this.columnValues, overviews, index, datastripes.Y_SELECTION_SUMMARY, drawOverviews);
         break;
       case "ordinal" : 
-        brushes.makeTotalOverviewOrdinalBrush    (columnValues, overviews, index, datastripes.Y_SUMMARY, drawOverviews);
-        brushes.makeSelectionOverviewOrdinalBrush(columnValues, overviews, index, datastripes.Y_SELECTION_SUMMARY, drawOverviews);
+        this.brushes.makeTotalOverviewOrdinalBrush    (this.columnValues, overviews, index, datastripes.Y_SUMMARY, drawOverviews);
+        this.brushes.makeSelectionOverviewOrdinalBrush(this.columnValues, overviews, index, datastripes.Y_SELECTION_SUMMARY, drawOverviews);
         break;
     }
   }
