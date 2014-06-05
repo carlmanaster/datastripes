@@ -37,18 +37,19 @@
   },
 
   makeRootGraphic: function() {
-    var y    = d3.scale.linear()
+    var self = this
+    ,   y    = d3.scale.linear()
                  .range([datastripes.HEIGHT + datastripes.Y_MIN, datastripes.Y_MIN])
                  .domain([datastripes.HEIGHT, 0])
-    ,  brush = this.brushes.makeDatasetBrush(y, this.drawOverviews);
+    ,  brush = self.brushes.makeDatasetBrush(y, function() {self.drawOverviews();});
     
-    this.root.append("g")
+    self.root.append("g")
              .attr("opacity", 0)
              .call(brush)
              .selectAll("rect")
              .attr("x", 0)
              .attr("y", datastripes.Y_MIN)
-             .attr("width", this.columns.length * datastripes.COLUMN_WIDTH);
+             .attr("width", self.columns.length * datastripes.COLUMN_WIDTH);
   },
 
   makeCharts: function(dataset, overviews) {
