@@ -17,13 +17,15 @@ The core idea of datastripes comes from Ramana Rao's [Table Lens](http://www.ram
 
 # Code
 
-The current state of the code is this: it demonstrates the functionality described above.  The html file creates a randomized correlated dataset with seven columns and two hundred rows; click on the column headings to detect correlations.
+The current state of the code is this: it demonstrates the functionality described above.  
 
-If you want to use this code on your own data, you'll have to write a little javascript code to bring in that data; someday I'll introduce that functionality, but not yet.
+Click "Choose File" to read a comma-delimited file or click "Random Data" to generate a randomized correlated dataset with seven columns and two hundred rows.
+
+Click on the column headings to detect correlations.  Drag through the data rows to make a selection.  Drag in the summary charts to select by value.
+
 
 Future plans for this code base include:
  - support for binary data
- - ability to import your own data
  - hover to provide more information
 
 # Requirements
