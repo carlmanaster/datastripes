@@ -38,7 +38,7 @@
       for (i = 0; i < this.options.columns ; i++) {
         result[i] = Math.random();
       }
-      result[this.options.columns - 2] = this.randomColor();
+      result[this.options.columns - 1] = this.randomColor();
       return result;
     },
     
@@ -60,7 +60,7 @@
           i;
       for (i = 0; i < 100; i++) {
         row    = Math.floor(Math.random() * this.options.rows);
-        column = Math.floor(Math.random() * (this.options.columns + 1));
+        column = Math.floor(Math.random() * (this.options.columns));
         this.dataset[row][column] = null;
       }      
     }, 
@@ -70,7 +70,7 @@
     ,   result = [];
     for (i = 0; i < this.options.columns - 1; i++)
       result[i] = "Column " + (i + 1);
-    result[6] = "Ordinal"
+    result[this.options.columns - 1] = "Ordinal"
     return result;
   }
 

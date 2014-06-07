@@ -9,8 +9,6 @@
     Y_SUMMARY               : 30,
     Y_SELECTION_SUMMARY     : 45,
     SORT_ANIMATION_DURATION : 500,
-    WIDTH                   : 800,
-    HEIGHT                  : 500,
     SUMMARY_HEIGHT          : 14,
     HISTOGRAM_BINS          : 10,
     BAR_COLOR               : 'green',

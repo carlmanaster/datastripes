@@ -15,7 +15,7 @@
     ,   util           = new datastripes.Util();
     this.classifier    = new datastripes.ColumnClassifier();
     
-    var panes          = new datastripes.Panes();
+    var panes          = new datastripes.Panes(dataset.length, dataset[0].length);
     this.root          = panes.root();
     var highlightPane  = panes.highlightPane(this.root);
 
@@ -33,23 +33,23 @@
     this.makeOverviewBrushes();
     draw.drawSelection();
     this.drawLines();
-    this.makeRootGraphic();
+    this.makeRootGraphic(dataset.length);
   },
 
-  makeRootGraphic: function() {
+  makeRootGraphic: function(height) {
     var self = this
     ,   y    = d3.scale.linear()
-                 .range([datastripes.HEIGHT + datastripes.Y_MIN, datastripes.Y_MIN])
-                 .domain([datastripes.HEIGHT, 0])
+                 .range([height + datastripes.Y_MIN, datastripes.Y_MIN])
+                 .domain([height, 0])
     ,  brush = self.brushes.makeDatasetBrush(y, function() {self.drawOverviews();});
     
     self.root.append("g")
              .attr("opacity", 0)
              .call(brush)
              .selectAll("rect")
-             .attr("x", 0)
-             .attr("y", datastripes.Y_MIN)
-             .attr("width", self.columns.length * datastripes.COLUMN_WIDTH);
+             .attr("x",      0)
+             .attr("y",      datastripes.Y_MIN)
+             .attr("width",  self.columns.length * datastripes.COLUMN_WIDTH);
   },
 
   makeCharts: function(dataset, overviews) {

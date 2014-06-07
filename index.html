@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Data Stripes</title>      
 
-    <!-- Vendor Resources (local) 
+    <!-- Vendor Resources (local)
     <script type="text/javascript" src="resource/js/vendor/underscore.js"></script>
     <script type="text/javascript" src="resource/js/vendor/d3.js"></script>
     <!-- -->
@@ -22,6 +22,7 @@
     <script type="text/javascript" src="resource/js/column-classifier.js"></script>
     <script type="text/javascript" src="resource/js/column-values.js"></script>
     <script type="text/javascript" src="resource/js/data-generator.js"></script>
+    <script type="text/javascript" src="resource/js/data-file-reader.js"></script>
     <script type="text/javascript" src="resource/js/draw.js"></script>
     <script type="text/javascript" src="resource/js/math.js"></script>
     <script type="text/javascript" src="resource/js/numeric-charts.js"></script>
@@ -32,6 +33,40 @@
     <script type="text/javascript" src="resource/js/datastripes-chart.js"></script>
   </head>
   <body>
-    <script type="text/javascript" src="resource/js/main.js"></script>
+    <div id="buttons">
+      <input type="file" id="file-selector" single>
+        <script>
+          var control = document.getElementById("file-selector")
+          ,   buttons = document.getElementById("buttons");
+          control.addEventListener("change", function(event) {
+            var file = event.srcElement.files[0]
+            ,   reader        = new datastripes.DataFileReader({
+                                      file    : file
+                                    })
+            buttons.style.visibility = 'hidden';
+          }, false);
+        </script>
+      </input>
+
+      <button id="random-data" value="Random Data">
+        Random Data
+        <script type="text/javascript">
+          var control = document.getElementById("random-data")
+          ,   buttons = document.getElementById("buttons");
+          control.addEventListener("click", function(event) {
+            buttons.style.visibility = 'hidden';
+            var generator     = new datastripes.DataGenerator({
+                                      rows    : datastripes.ROWS,
+                                      columns : datastripes.COLUMNS + 1
+                                    })
+            ,   dataset       = generator.makeRandomCorrelatedDatasetWithNulls()
+            ,   columnNames   = generator.makeColumnNames()
+            ,   chart         = new datastripes.DatastripesChart();
+             
+            chart.init(dataset, columnNames);
+          }, false);
+        </script>
+      </button>
+    </div>
   </body>
 </html>

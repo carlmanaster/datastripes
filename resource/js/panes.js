@@ -4,7 +4,9 @@
   datastripes.Panes = Panes;
 
   // Constructor
-  function Panes() {
+  function Panes(rowCount, columnCount) {
+    this.rowCount    = rowCount;
+    this.columnCount = columnCount;
   }
 
   // Methods
@@ -13,8 +15,8 @@
     root: function() {
       return d3.select("body")
                .append("svg")
-               .attr("width", datastripes.WIDTH)
-               .attr("height", datastripes.HEIGHT);
+               .attr("width",  this.columnCount * datastripes.COLUMN_WIDTH)
+               .attr("height", this.rowCount + datastripes.Y_MIN);
     },
     
     highlightPane: function(root) {
@@ -30,7 +32,8 @@
     },
 
     oneNewSvgPerColumn: function(root) {
-      return _.map(_.range(datastripes.COLUMNS + 1), function() {return root.append("svg");});
+      // TODO: this should depend on the number of columns in the dataset
+      return _.map(_.range(this.columnCount), function() {return root.append("svg");});
     }
   
   });
