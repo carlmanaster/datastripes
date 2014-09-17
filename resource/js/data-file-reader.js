@@ -21,7 +21,7 @@
           ,   i
           ,   j
           ,   f
-          ,   lines = contents.split('\n');
+          ,   lines = contents.split(/\n+/);
 
           this.columnNames = lines[0].split(',');
 
