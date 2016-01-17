@@ -7,7 +7,8 @@
   var geometry = new datastripes.Geometry();
 
   // Constructor
-  function OrdinalCharts(dataset, columns, overviews, index) {
+  function OrdinalCharts(columnNames, dataset, columns, overviews, index) {
+    this.columnNames  = columnNames;
     this.dataset      = dataset;
     this.column       = columns[index];
     this.overviews    = overviews;
@@ -65,7 +66,7 @@
       ,   overview   = this.overviews[overviewIndex][this.index]
       ,   barWidth   = this.scale.rangeBand()
       ,   bars       = overview.selectAll("rect")
-                               .data(freq);      
+                               .data(freq);
       bars.enter().append("rect")
           .attr("x",      function(d, i) { return self.scale(self.keys[i]); })
           .attr("width",  barWidth)
@@ -73,6 +74,30 @@
       bars.transition()
           .attr("height", function(d) { return yscale(d); })
           .attr("y",      function(d) { return y2 - yscale(d); })
+
+      var name = this.columnNames[this.index] + (overviewIndex == 0 ? ' overall' : ' selection');
+      var html = '<strong>' + name + '</strong>' + '</br>';
+      var sum = 0;
+      var i;
+      all_freq.forEach( function(f) {sum += f;} );
+      for (i = 0; i < this.keys.length; i++) {
+        html += this.keys[i] + ' ' + Math.round(100 * freq[i] / sum) + '%</br>'
+      }
+
+      overview
+        .on("mouseover", function(d) {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", .9);
+            tooltip.html(html)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY + 10) + "px");
+        })
+        .on("mouseout", function(d) {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
     }
   
   });

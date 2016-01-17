@@ -17,6 +17,8 @@
   
     brushStart: function() {
       this.select.clear();
+      tooltip.transition()
+          .style("opacity", 0);
       this.draw.drawSelection();
     },
     
@@ -24,6 +26,8 @@
       var top    = brush.extent()[0]
       ,   bottom = brush.extent()[1];
       
+      tooltip.transition()
+          .style("opacity", 0);
       this.select.byIndex(top, bottom);
       this.draw.drawSelection();
     },
@@ -58,7 +62,7 @@
       this.select.selectedByValue(column, min, max);
       this.draw.drawSelection();
       drawOverviews();
-      overview.selectAll(".brush").call(brush.clear());        
+      overview.selectAll(".brush").call(brush.clear());
     },
     
     makeDatasetBrush: function(y, drawOverviews) {
@@ -139,7 +143,7 @@
       ,   brush    = d3.svg.brush().x(xScale)
                        .on("brushend", function() { self.selectionOrdinalOverviewBrushEnd(columnValues, column, brush, 1, overviews, drawOverviews); });
       this.makeGraphic(overview, brush, x1, y1);
-      overview.selectAll(".brush").call(brush.clear());        
+      overview.selectAll(".brush").call(brush.clear());
     },
 
     makeOrdinalOverviewXScale: function(domain, column) {
@@ -177,7 +181,7 @@
       this.select.byValue(column, bounds[0], bounds[1]);
       this.draw.drawSelection();
       drawOverviews();
-      overview.selectAll(".brush").call(brush.clear());        
+      overview.selectAll(".brush").call(brush.clear());
     },
   
     getOrdinalBounds: function(column, columnValues) {

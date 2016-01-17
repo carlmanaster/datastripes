@@ -23,7 +23,7 @@
     this.columns       = panes.columns(this.root);
     this.overviews     = panes.overviews(this.root);
     this.columnValues  = new datastripes.ColumnValues(dataset);
-    this.charts        = this.makeCharts(dataset, this.overviews);
+    this.charts        = this.makeCharts(columnNames, dataset, this.overviews);
 
     var draw           = new datastripes.Draw(dataset, highlightPane, this.columns);
     this.brushes       = new datastripes.Brushes(dataset, draw);
@@ -52,14 +52,14 @@
              .attr("width",  self.columns.length * datastripes.COLUMN_WIDTH);
   },
 
-  makeCharts: function(dataset, overviews) {
+  makeCharts: function(columnNames, dataset, overviews) {
     var self = this;
     return _.map(_.range(self.columns.length), function(i) {
       var values = _.map(dataset, function(item) {return item.data[i];});
 
       switch (self.classifier.classify(values)) {
-        case "numeric" : return new datastripes.NumericCharts(dataset, self.columns, overviews, i);
-        case "ordinal" : return new datastripes.OrdinalCharts(dataset, self.columns, overviews, i);
+        case "numeric" : return new datastripes.NumericCharts(columnNames, dataset, self.columns, overviews, i);
+        case "ordinal" : return new datastripes.OrdinalCharts(columnNames, dataset, self.columns, overviews, i);
       }
     });
   },

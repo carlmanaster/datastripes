@@ -7,7 +7,8 @@
   var geometry = new datastripes.Geometry();
 
   // Constructor
-  function NumericCharts(dataset, columns, overviews, index) {
+  function NumericCharts(columnNames, dataset, columns, overviews, index) {
+    this.columnNames  = columnNames;
     this.dataset      = dataset;
     this.column       = columns[index];
     this.overviews    = overviews;
@@ -62,14 +63,40 @@
       ,   overview   = this.overviews[overviewIndex][this.index]
       ,   barWidth   = (datastripes.COLUMN_WIDTH - 1) / datastripes.HISTOGRAM_BINS
       ,   bars       = overview.selectAll("rect")
-                               .data(histogram);      
+                               .data(histogram);
+
       bars.enter().append("rect")
           .attr("x",      function(d, i) { return self.x1 + i * barWidth; })
           .attr("width",  barWidth)
           .attr("fill",   datastripes.HISTOGRAM_COLOR);
+
       bars.transition()
           .attr("height", function(d) { return yscale(d.length); })
-          .attr("y",      function(d) { return y2 - yscale(d.length); })
+          .attr("y",      function(d) { return y2 - yscale(d.length); });
+
+      var statData = histogramValues.length == 0 ? all : histogramValues;
+      var mean     = d3.mean(statData).toFixed(2);  // TODO: don't know necessary precision
+      var sd       = d3.deviation(statData).toFixed(2);
+      var name     = this.columnNames[this.index] + (overviewIndex == 0 ? ' overall' : ' selection');
+
+      var html = '<strong>' + name + '</strong>' + '</br>'
+                            + 'mean: ' + mean + '</br>'
+                            + 'SD:   ' + sd   + '</br>';
+      overview
+        .on("mouseover", function(d) {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", .9);
+            tooltip.html(html)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY + 10) + "px");
+        })
+        .on("mouseout", function(d) {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
       this.drawMean(overview, histogramValues, y1);
     },
   
