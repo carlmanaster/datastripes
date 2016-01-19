@@ -5,6 +5,7 @@
   
   var math     = new datastripes.MathUtil();
   var geometry = new datastripes.Geometry();
+  var Tooltip  = new datastripes.Tooltip();
 
   // Constructor
   function OrdinalCharts(columnNames, dataset, columns, overviews, index) {
@@ -85,19 +86,8 @@
       }
 
       overview
-        .on("mouseover", function(d) {
-            tooltip.transition()
-                .duration(500)
-                .style("opacity", .9);
-            tooltip.html(html)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY + 10) + "px");
-        })
-        .on("mouseout", function(d) {
-            tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
+        .on("mouseover", function(d) { Tooltip.show(html); })
+        .on("mouseout", Tooltip.hide);
     }
   
   });

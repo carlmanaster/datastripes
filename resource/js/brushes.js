@@ -11,14 +11,14 @@
 
   var geometry = new datastripes.Geometry();
   var snap     = new datastripes.Snap();
+  var Tooltip  = new datastripes.Tooltip();
 
   // Methods
   _.extend(Brushes.prototype, {
   
     brushStart: function() {
       this.select.clear();
-      tooltip.transition()
-          .style("opacity", 0);
+      Tooltip.hideImmediately();
       this.draw.drawSelection();
     },
     
@@ -26,8 +26,7 @@
       var top    = brush.extent()[0]
       ,   bottom = brush.extent()[1];
       
-      tooltip.transition()
-          .style("opacity", 0);
+      Tooltip.hideImmediately();
       this.select.byIndex(top, bottom);
       this.draw.drawSelection();
     },

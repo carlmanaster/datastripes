@@ -37,6 +37,7 @@
 
     <!-- datastripes code -->
     <script type="text/javascript" src="resource/js/app.js"></script>
+    <script type="text/javascript" src="resource/js/tooltip.js"></script>
     <script type="text/javascript" src="resource/js/snap.js"></script>
     <script type="text/javascript" src="resource/js/geometry.js"></script>
     <script type="text/javascript" src="resource/js/brushes.js"></script>
@@ -56,15 +57,10 @@
   <body>
 
   <script>
-    // TODO: move this out into a js file
-    var tooltip = d3.select("body").append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 0);
+    var Tooltip  = new datastripes.Tooltip();
+    var tooltip = Tooltip.create();
     function keyDownTextField(e) {
-      if (e.which == 27) {
-        tooltip.transition()
-            .style("opacity", 0);
-      }
+      if (e.which == 27) { Tooltip.hideImmediately(); }
     }
   </script>
 
