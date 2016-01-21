@@ -77,7 +77,7 @@
 
       var statData = histogramValues.length == 0 ? all : histogramValues;
       var mean     = d3.mean(statData).toFixed(2);  // TODO: don't know necessary precision
-      var sd       = d3.deviation(statData).toFixed(2);
+      var sd       = statData.length > 2 ? d3.deviation(statData).toFixed(2) : '--';
       var name     = this.columnNames[this.index] + (overviewIndex == 0 ? ' overall' : ' selection');
 
       var html = '<strong>' + name + '</strong>' + '</br>'
