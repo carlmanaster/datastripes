@@ -7,6 +7,8 @@
   function DatastripesChart() {
   }
 
+  var myDataset;
+
   // Methods
   _.extend(DatastripesChart.prototype, {
   
@@ -20,6 +22,9 @@
     var highlightPane  = panes.highlightPane(this.root);
 
     dataset = util.instrumentDataset(dataset);
+
+    myDataset          = dataset;
+    this.datset        = dataset;
     this.columns       = panes.columns(this.root);
     this.overviews     = panes.overviews(this.root);
     this.columnValues  = new datastripes.ColumnValues(dataset);
@@ -37,6 +42,7 @@
   },
 
   makeRootGraphic: function(height) {
+    var Tooltip  = new datastripes.Tooltip();
     var self = this
     ,   y    = d3.scale.linear()
                  .range([height + datastripes.Y_MIN, datastripes.Y_MIN])
@@ -49,7 +55,20 @@
              .selectAll("rect")
              .attr("x",      0)
              .attr("y",      datastripes.Y_MIN)
-             .attr("width",  self.columns.length * datastripes.COLUMN_WIDTH);
+             .attr("width",  self.columns.length * datastripes.COLUMN_WIDTH)
+             .on("mouseout", Tooltip.hide)
+             .on("mousemove", this.mouseMove);
+  },
+
+  mouseMove: function() {
+    var mouse = d3.mouse(this);
+    var x = mouse[0];
+    var y = mouse[1];
+    var rowIndex = y - datastripes.Y_MIN;
+    var columnIndex = Math.floor(x / datastripes.COLUMN_WIDTH);
+    var value = myDataset[rowIndex].data[columnIndex];
+    if (_.isNumber(value)) {value = value.toFixed(2);}
+    Tooltip.show(value == null ? 'null' : value);
   },
 
   makeCharts: function(columnNames, dataset, overviews) {
