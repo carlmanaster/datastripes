@@ -7,9 +7,9 @@ javascript multivariate data visualization
 
 The basic idea behind datastripes is that you can see correlations between columns of data by sorting one column and seeing which columns sort with it.  If it's quick and easy enough to sort your data, it doesn't take a very sophisticated rendering of the data - just a pixel-high bar with width proportional to the value does the job.
 
-So that's datastripes in a nutshell.  Values are displayed as a grid of bars, and you sort columns by clicking on the column header.  Null values are displayed as gray bars, and sort below any other values.
+So that's datastripes in a nutshell.  Values are displayed as a grid of bars, and you sort columns by clicking on the column header.  Null values are displayed as gray bars, and sort below any other values.  Hover over a bar to see its value.
 
-At the top of each column are two histograms. The top histogram represents the distribution of all the values in the column; the lower histogram represents selected values.  You select rows by dragging in the data region or by dragging in either of the histograms.
+At the top of each column are two histograms. The top histogram represents the distribution of all the values in the column; the lower histogram represents selected values.  You select rows by dragging in the data region or by dragging in either of the histograms.  Hover over a histogram to see a numeric summary.
 
 # Origins
 
@@ -26,7 +26,7 @@ Click on the column headings to detect correlations.  Drag through the data rows
 
 Future plans for this code base include:
  - support for binary data
- - hover to provide more information
+ - support for date/time data
 
 # Requirements
 
