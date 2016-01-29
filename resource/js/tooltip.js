@@ -15,10 +15,12 @@
                   .style("opacity", 0);
     },
   
-    show: function(html) {
+    show: function(html, color) {
+      color = color || 'white'
       tooltip.transition()
           .duration(500)
-          .style("opacity", .9);
+          .style("opacity", .9)
+          .style("background-color", color);
 	    tooltip.html(html)
 	      .style("left", (d3.event.pageX) + "px")
 	      .style("top", (d3.event.pageY + 10) + "px");

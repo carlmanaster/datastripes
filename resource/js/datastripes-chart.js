@@ -66,9 +66,11 @@
     var y = mouse[1];
     var rowIndex = y - datastripes.Y_MIN;
     var columnIndex = Math.floor(x / datastripes.COLUMN_WIDTH);
-    var value = myDataset[rowIndex].data[columnIndex];
+    var row = myDataset[rowIndex];
+    var value = row.data[columnIndex];
+    var color = row.selected ? 'yellow' : 'white';
     if (_.isNumber(value)) {value = value.toFixed(2);}
-    Tooltip.show(value == null ? 'null' : value);
+    Tooltip.show(value == null ? 'null' : value, color);
   },
 
   makeCharts: function(columnNames, dataset, overviews) {
