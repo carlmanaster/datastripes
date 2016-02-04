@@ -91,10 +91,13 @@
                       .data(columnNames, function(d) { return d; });
     headers.enter()
            .append("text")
-           .attr("x", function(a, i) { return geometry.columnStart(i); })
+           .attr("x", function(a, i) { return geometry.columnCenter(i); })
            .attr("y", datastripes.Y_HEADER)
            .text( function(d) { return d; })
            .style("cursor", "pointer")
+           .style('font-family', 'sans-serif')
+           .style('font-size', '12px')
+           .attr("text-anchor", "middle")
            .on("click", function(d, i) {
               util.sortByColumn(dataset, i);
               self.drawLines();

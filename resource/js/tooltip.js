@@ -18,7 +18,7 @@
     show: function(html, color) {
       color = color || 'white'
       tooltip.transition()
-          .duration(500)
+          .duration(300)
           .style("opacity", .9)
           .style("background-color", color);
 	    tooltip.html(html)

@@ -104,9 +104,9 @@
           .attr("y2",     y2)
           .attr("stroke", datastripes.MEAN_COLOR);
       line.transition()
-          .attr("x1",     function(d) { return self.scale(d); })
-          .attr("x2",     function(d) { return self.scale(d); })
-          .attr("stroke", function(d) { return inRange == true ? datastripes.MEAN_COLOR : datastripes.OUTLIER_MEAN_COLOR; }); 
+          .attr("x1",     self.scale)
+          .attr("x2",     self.scale)
+          .attr("stroke", function(d) { return inRange === true ? datastripes.MEAN_COLOR : datastripes.OUTLIER_MEAN_COLOR; }); 
     }
   
   });

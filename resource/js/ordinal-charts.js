@@ -48,7 +48,7 @@
       ,   result = []
       ,   i;
       this.keys.forEach( function(k) {map[k] = 0;} );
-      values.forEach(      function(k) {map[k]++; } );
+      values.forEach(    function(k) {map[k]++; } );
       for (i = 0; i < this.keys.length; i++) {
         result[i] = map[this.keys[i]];
       }
@@ -73,7 +73,7 @@
           .attr("width",  barWidth)
           .attr("fill",   datastripes.HISTOGRAM_COLOR);
       bars.transition()
-          .attr("height", function(d) { return yscale(d); })
+          .attr("height", yscale)
           .attr("y",      function(d) { return y2 - yscale(d); })
 
       var name = this.columnNames[this.index] + (overviewIndex == 0 ? ' overall' : ' selection');
