@@ -1,9 +1,0 @@
-Please download underscore.js and d3.js and save them in this folder.
-
-I haven't yet figured out all of the ins and outs of how to properly reference them and include all relevant licensing information, and am taking the approach of leaving their source out of my repository until I have figured it out.
-
-underscore.js:
-http://underscorejs.org/
-
-d3.js:
-https://github.com/mbostock/d3/releases

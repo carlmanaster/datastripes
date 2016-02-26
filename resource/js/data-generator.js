@@ -38,12 +38,17 @@
       for (i = 0; i < this.options.columns ; i++) {
         result[i] = Math.random();
       }
-      result[this.options.columns - 1] = this.randomColor();
+      result[this.options.columns - 2] = this.randomColor();
+      result[this.options.columns - 1] = this.randomBool();
       return result;
     },
     
     randomColor: function() {
       return ["red", "yellow", "green", "blue", "red"][Math.floor(Math.random() * 5)];
+    },
+    
+    randomBool: function() {
+      return ['true', 'false'][Math.floor(Math.random() * 2)];
     },
 
     introduceCorrelation: function () {
@@ -70,7 +75,8 @@
     ,   result = [];
     for (i = 0; i < this.options.columns - 1; i++)
       result[i] = "Column " + (i + 1);
-    result[this.options.columns - 1] = "Ordinal"
+    result[this.options.columns - 2] = 'Color'
+    result[this.options.columns - 1] = 'Bool'
     return result;
   }
 

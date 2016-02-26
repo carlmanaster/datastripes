@@ -2,7 +2,7 @@
 
   var datastripes = {
     ROWS                    : 200,
-    COLUMNS                 : 6,
+    COLUMNS                 : 7,
     COLUMN_WIDTH            : 100,
     Y_MIN                   : 65,
     Y_HEADER                : 15,
@@ -12,6 +12,8 @@
     SUMMARY_HEIGHT          : 14,
     HISTOGRAM_BINS          : 10,
     BAR_COLOR               : 'green',
+    TRUE_COLOR              : 'green',
+    FALSE_COLOR             : 'red',
     HISTOGRAM_COLOR         : 'darkseagreen',
     MEAN_COLOR              : 'blue',
     OUTLIER_MEAN_COLOR      : 'red',

@@ -81,6 +81,7 @@
       switch (self.classifier.classify(values)) {
         case "numeric" : return new datastripes.NumericCharts(columnNames, dataset, self.columns, overviews, i);
         case "ordinal" : return new datastripes.OrdinalCharts(columnNames, dataset, self.columns, overviews, i);
+        case "boolean" : return new datastripes.BooleanCharts(columnNames, dataset, self.columns, overviews, i);
       }
     });
   },
@@ -151,6 +152,12 @@
           (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
         break;
       case "ordinal" : 
+        self.brushes.makeTotalOverviewOrdinalBrush    
+          (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
+        self.brushes.makeSelectionOverviewOrdinalBrush
+          (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
+        break;
+      case "boolean" : 
         self.brushes.makeTotalOverviewOrdinalBrush    
           (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
         self.brushes.makeSelectionOverviewOrdinalBrush
