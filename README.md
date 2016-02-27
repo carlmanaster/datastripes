@@ -25,7 +25,6 @@ Click on the column headings to detect correlations.  Drag through the data rows
 
 
 Future plans for this code base include:
- - support for binary data
  - support for date/time data
 
 # Requirements
