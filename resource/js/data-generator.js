@@ -35,11 +35,13 @@
     makeRandomRow: function () {
       var result = [],
           i;
-      for (i = 0; i < this.options.columns ; i++) {
+      for (i = 0; i < this.options.columns - 3 ; i++) {
         result[i] = Math.random();
       }
-      result[this.options.columns - 2] = this.randomColor();
-      result[this.options.columns - 1] = this.randomBool();
+      result[this.options.columns - 3] = this.randomColor();
+      result[this.options.columns - 2] = this.randomBool();
+      // result[this.options.columns - 1] = this.randomDayOfMonth(); // just want to see what n=31 looks like
+      result[this.options.columns - 1] = this.randomDateWithinTheLastYear();
       return result;
     },
     
@@ -49,6 +51,17 @@
     
     randomBool: function() {
       return ['true', 'false'][Math.floor(Math.random() * 2)];
+    },
+
+    randomDayOfMonth: function() {
+      return ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', 
+              '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', 
+              '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'][Math.floor(Math.random() * 31)];
+    },
+
+    randomDateWithinTheLastYear: function() {
+      var msPerYear = 1000 * 60 * 60 * 24 * 365;
+      return new Date(Math.floor(Date.now() - Math.random() * msPerYear));
     },
 
     introduceCorrelation: function () {
@@ -73,10 +86,11 @@
     makeColumnNames: function() {
     var i
     ,   result = [];
-    for (i = 0; i < this.options.columns - 1; i++)
+    for (i = 0; i < this.options.columns - 3; i++)
       result[i] = "Column " + (i + 1);
-    result[this.options.columns - 2] = 'Color'
-    result[this.options.columns - 1] = 'Bool'
+    result[this.options.columns - 3] = 'Color'
+    result[this.options.columns - 2] = 'Bool'
+    result[this.options.columns - 1] = 'Date'
     return result;
   }
 

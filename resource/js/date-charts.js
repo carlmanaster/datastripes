@@ -1,14 +1,14 @@
 (function (datastripes) {
 
   // Export "package"
-  datastripes.NumericCharts = NumericCharts;
+  datastripes.DateCharts = DateCharts;
   
   var math     = new datastripes.MathUtil();
   var geometry = new datastripes.Geometry();
   var Tooltip  = new datastripes.Tooltip();
 
   // Constructor
-  function NumericCharts(columnNames, dataset, columns, overviews, index) {
+  function DateCharts(columnNames, dataset, columns, overviews, index) {
     this.columnNames  = columnNames;
     this.dataset      = dataset;
     this.column       = columns[index];
@@ -23,7 +23,7 @@
   }
 
   // Methods
-  _.extend(NumericCharts.prototype, {
+  _.extend(DateCharts.prototype, {
   
     drawColumn: function() {
       var self   = this
@@ -33,8 +33,8 @@
 
       lines.enter()
            .append("line")
-           .attr("stroke", function(a)  { return _.isNull(a.data[index]) ? datastripes.NULL_COLOR : datastripes.BAR_COLOR; })
-           .attr("x1",     self.scale(self.extent[0]))
+           .attr("stroke", function(a)  { return _.isNull(a.data[index]) ? datastripes.NULL_COLOR : 'blue'; })
+           .attr("x1",     function(a)  { return _.isNull(a.data[index]) ? self.scale(self.extent[0]) : self.scale(a.data[index]) - 1; })
            .attr("x2",     function(a)  { return _.isNull(a.data[index]) ? self.scale(self.extent[1]) : self.scale(a.data[index]); });
   
       lines.transition()
@@ -49,6 +49,26 @@
                .range(d3.extent(all))
                .frequency(true)
                (values)
+    },
+
+    formattedSd: function(statData) {
+      if (statData.length <= 2) return '--';
+
+      var sd = d3.deviation(statData).toFixed(0);
+      var seconds = sd / 1000;
+      var minutes = seconds / 60;
+      var hours = minutes / 60;
+      var days = hours / 24;
+      var months = days / 30;
+      var years = days / 365;
+
+      if (years > 1) return years.toFixed(1) + ' years';
+      if (months > 1) return months.toFixed(1) + ' months';
+      if (days > 1) return days.toFixed(1) + ' days';
+      if (hours > 1) return hours.toFixed(1) + ' hours';
+      if (minutes > 1) return minutes.toFixed(1) + ' minutes';
+      if (seconds > 1) return seconds.toFixed(1) + ' seconds';
+      return sd.toFixed(1) + ' ms';
     },
   
     drawOverview: function(overviewIndex, histogramValues, y1) {
@@ -69,15 +89,15 @@
       bars.enter().append("rect")
           .attr("x",      function(d, i) { return self.x1 + i * barWidth; })
           .attr("width",  barWidth)
-          .attr("fill",   datastripes.HISTOGRAM_COLOR);
+          .attr("fill",   'lightblue');
 
       bars.transition()
           .attr("height", function(d) { return yscale(d.length); })
           .attr("y",      function(d) { return y2 - yscale(d.length); });
 
       var statData = histogramValues.length == 0 ? all : histogramValues;
-      var mean     = d3.mean(statData).toFixed(2);  // TODO: don't know necessary precision
-      var sd       = statData.length > 2 ? d3.deviation(statData).toFixed(2) : '--';
+      var mean     = d3.time.format("%x %X")(new Date(parseInt(d3.mean(statData).toFixed())));
+      var sd       = this.formattedSd(statData)
       var name     = this.columnNames[this.index] + (overviewIndex == 0 ? ' overall' : ' selection');
 
       var html = '<strong>' + name + '</strong>' + '</br>'
@@ -89,7 +109,7 @@
 
       this.drawMean(overview, histogramValues, y1);
     },
-  
+
     drawMean: function(overview, histogramValues, y1) {
       var self       = this
       ,   all        = this.columnValues.all(this.index)
@@ -98,7 +118,7 @@
       ,   y2         = y1 + datastripes.SUMMARY_HEIGHT
       ,   line       = overview.selectAll("line")
                                .data(stat)
-      ,   inRange    = isNaN(stat[0]) || Math.abs(d3.mean(all) - stat[0]) < math.standardDeviation(all);
+      ,   inRange    = isNaN(stat[0]) || Math.abs(d3.mean(all) - stat[0]) < d3.deviation(all);
 
       if (histogramValues.length === 0) return
 

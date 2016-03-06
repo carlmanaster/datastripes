@@ -40,7 +40,7 @@
       var extent = brush.extent()
       ,   min    = snap.toBinStart(extent[0], domain)
       ,   max    = snap.toBinEnd(extent[1], domain);
-      
+
       this.select.byValue(column, min, max);
       this.draw.drawSelection();
       drawOverviews();
@@ -64,6 +64,34 @@
       overview.selectAll(".brush").call(brush.clear());
     },
     
+    totalDateOverviewBrushing: function(column, brush, domain, drawOverviews) {
+      var extent = brush.extent()
+      ,   min    = snap.toDateBinStart(extent[0], domain)
+      ,   max    = snap.toDateBinEnd(extent[1], domain);
+
+      this.select.byValue(column, min, max);
+      this.draw.drawSelection();
+      drawOverviews();
+    },
+    
+    totalDateOverviewBrushEnd: function (column, brush, domain, overviewIndex, overviews, drawOverviews) {
+      var overview  = overviews[overviewIndex][column];
+      this.totalDateOverviewBrushing(column, brush, domain, drawOverviews);
+      overview.selectAll(".brush").call(brush.clear());        
+    },
+  
+    selectionDateOverviewBrushEnd: function (column, brush, domain, overviewIndex, overviews, drawOverviews) {
+      var overview = overviews[overviewIndex][column]
+      ,   extent   = brush.extent()
+      ,   min      = snap.toDateBinStart(extent[0], domain)
+      ,   max      = snap.toDateBinEnd(extent[1], domain);
+      
+      this.select.selectedByValue(column, min, max);
+      this.draw.drawSelection();
+      drawOverviews();
+      overview.selectAll(".brush").call(brush.clear());
+    },
+
     makeDatasetBrush: function(y, drawOverviews) {
       var self   = this    
       ,   brush = d3.svg.brush().y(y)
@@ -115,6 +143,32 @@
       ,   xScale   = this.makeOverviewXScale(domain, column)
       ,   brush    = d3.svg.brush().x(xScale)
                        .on("brushend", function() { self.selectionOverviewBrushEnd(column, brush, domain, 1, overviews, drawOverviews); });
+      this.makeGraphic(overview, brush, x1, y1);
+      overview.selectAll(".brush").call(brush.clear());        
+    },
+  
+    makeTotalOverviewDateBrush: function (columnValues, overviews, column, y1, drawOverviews) {
+      var self     = this
+      ,   domain   = d3.extent(columnValues.all(column))
+      ,   overview = overviews[0][column]
+      ,   x1       = geometry.columnStart(column)
+      ,   xScale   = this.makeOverviewXScale(domain, column)
+      ,   brush    = d3.svg.brush().x(xScale)
+                       .on("brushstart", function() { self.brushStart(); })
+                       .on("brush",      function() { self.totalDateOverviewBrushing(column, brush, domain, drawOverviews); })
+                       .on("brushend",   function() { self.totalDateOverviewBrushEnd(column, brush, domain, 0, overviews, drawOverviews); });
+      this.makeGraphic(overview, brush, x1, y1);
+      overview.selectAll(".brush").call(brush.clear());
+    },
+    
+    makeSelectionOverviewDateBrush: function(columnValues, overviews, column, y1, drawOverviews) {
+      var self     = this
+      ,   domain   = d3.extent(columnValues.all(column))
+      ,   overview = overviews[1][column]
+      ,   x1       = geometry.columnStart(column)
+      ,   xScale   = this.makeOverviewXScale(domain, column)
+      ,   brush    = d3.svg.brush().x(xScale)
+                       .on("brushend", function() { self.selectionDateOverviewBrushEnd(column, brush, domain, 1, overviews, drawOverviews); });
       this.makeGraphic(overview, brush, x1, y1);
       overview.selectAll(".brush").call(brush.clear());        
     },

@@ -70,6 +70,7 @@
     var value = row.data[columnIndex];
     var color = row.selected ? 'yellow' : 'white';
     if (_.isNumber(value)) {value = value.toFixed(2);}
+    if (_.isDate(value)) {value = d3.time.format("%x<br>%X")(value)}
     Tooltip.show(value == null ? 'null' : value, color);
   },
 
@@ -79,9 +80,10 @@
       var values = _.map(dataset, function(item) {return item.data[i];});
 
       switch (self.classifier.classify(values)) {
-        case "numeric" : return new datastripes.NumericCharts(columnNames, dataset, self.columns, overviews, i);
-        case "ordinal" : return new datastripes.OrdinalCharts(columnNames, dataset, self.columns, overviews, i);
-        case "boolean" : return new datastripes.BooleanCharts(columnNames, dataset, self.columns, overviews, i);
+        case 'date'    : return new datastripes.DateCharts(columnNames, dataset, self.columns, overviews, i);
+        case 'numeric' : return new datastripes.NumericCharts(columnNames, dataset, self.columns, overviews, i);
+        case 'ordinal' : return new datastripes.OrdinalCharts(columnNames, dataset, self.columns, overviews, i);
+        case 'boolean' : return new datastripes.BooleanCharts(columnNames, dataset, self.columns, overviews, i);
       }
     });
   },
@@ -145,19 +147,25 @@
     ,   selected = self.columnValues.selected(index);
 
     switch (self.classifier.classify(all)) {
-      case "numeric" : 
+      case 'date' : 
+        self.brushes.makeTotalOverviewDateBrush    
+          (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
+        self.brushes.makeSelectionOverviewDateBrush
+          (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
+        break;
+      case 'numeric' : 
         self.brushes.makeTotalOverviewNumericBrush    
           (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
         self.brushes.makeSelectionOverviewNumericBrush
           (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
         break;
-      case "ordinal" : 
+      case 'ordinal' : 
         self.brushes.makeTotalOverviewOrdinalBrush    
           (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
         self.brushes.makeSelectionOverviewOrdinalBrush
           (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
         break;
-      case "boolean" : 
+      case 'boolean' : 
         self.brushes.makeTotalOverviewOrdinalBrush    
           (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
         self.brushes.makeSelectionOverviewOrdinalBrush

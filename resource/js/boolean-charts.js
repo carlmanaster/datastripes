@@ -102,6 +102,8 @@
       ,   line       = overview.selectAll("line")
                                .data(stat);
 
+      if (histogramValues.length === 0) return
+
       var x = self.overviewScale;
 
       line.enter().append("line")
@@ -111,7 +113,6 @@
       line.transition()
           .attr("x1",     x)
           .attr("x2",     x);
-      console.log(line)
     }
 
   });

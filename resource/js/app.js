@@ -2,7 +2,7 @@
 
   var datastripes = {
     ROWS                    : 200,
-    COLUMNS                 : 7,
+    COLUMNS                 : 8,
     COLUMN_WIDTH            : 100,
     Y_MIN                   : 65,
     Y_HEADER                : 15,
