@@ -21,6 +21,7 @@
           ,   i
           ,   j
           ,   f
+          ,   d
           ,   lines = contents.split(/\n+/);
 
           this.columnNames = lines[0].split(',');
@@ -30,6 +31,14 @@
             line = lines[i].split(',');
             for (j = 0; j < line.length; j++) {
               if (line[j] == "") line[j] = null;
+              try {
+                d = Date.parse(line[j])
+                if (!_.isNaN(d)) {
+                  line[j] = new Date(d);
+                }
+              } catch (e) {
+                // don't worry about it
+              }
               try {
                 f = parseFloat(line[j]);
                 if (!_.isNaN(f)) {
