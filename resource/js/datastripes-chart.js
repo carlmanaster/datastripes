@@ -142,38 +142,17 @@
   },
 
   makeBothOverviewBrushes: function(index) {
-    var self     = this
-    ,   all      = self.columnValues.all(index)
-    ,   selected = self.columnValues.selected(index);
+    var self               = this
+    ,   all                = self.columnValues.all(index)
+    ,   selected           = self.columnValues.selected(index)
+    ,   chartType          = self.classifier.classify(all)
+    ,   makeTotalBrush     = self.brushes.getTotalOverviewBrush(chartType)
+    ,   makeSelectionBrush = self.brushes.getSelectionOverviewBrush(chartType);
 
-    switch (self.classifier.classify(all)) {
-      case 'date' : 
-        self.brushes.makeTotalOverviewDateBrush    
-          (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
-        self.brushes.makeSelectionOverviewDateBrush
-          (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
-        break;
-      case 'numeric' : 
-        self.brushes.makeTotalOverviewNumericBrush    
-          (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
-        self.brushes.makeSelectionOverviewNumericBrush
-          (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
-        break;
-      case 'ordinal' : 
-        self.brushes.makeTotalOverviewOrdinalBrush    
-          (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
-        self.brushes.makeSelectionOverviewOrdinalBrush
-          (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
-        break;
-      case 'boolean' : 
-        self.brushes.makeTotalOverviewOrdinalBrush    
-          (self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
-        self.brushes.makeSelectionOverviewOrdinalBrush
-          (self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
-        break;
-    }
+    makeTotalBrush(self.columnValues, self.overviews, index, datastripes.Y_SUMMARY, function() {self.drawOverviews();});
+    makeSelectionBrush(self.columnValues, self.overviews, index, datastripes.Y_SELECTION_SUMMARY, function() {self.drawOverviews();});
   }
 
-  });
+});
 
 }(window.datastripes));

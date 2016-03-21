@@ -246,6 +246,26 @@
       ,   key2   = keys[Math.floor(keys.length * (extent[1] - x1) / (x2 - x1))]
 
       return [key1, key2];
+    },
+
+    getTotalOverviewBrush: function(chartType) {
+      var self = this;
+      switch (chartType) {
+        case 'date'    : return self.makeTotalOverviewDateBrush.bind(self)
+        case 'numeric' : return self.makeTotalOverviewNumericBrush.bind(self)
+        case 'ordinal' : return self.makeTotalOverviewOrdinalBrush.bind(self)
+        case 'boolean' : return self.makeTotalOverviewOrdinalBrush.bind(self)
+      }
+    },
+
+    getSelectionOverviewBrush: function(chartType) {
+      var self = this;
+      switch (chartType) {
+        case 'date'    : return self.makeSelectionOverviewDateBrush.bind(self)
+        case 'numeric' : return self.makeSelectionOverviewNumericBrush.bind(self)
+        case 'ordinal' : return self.makeSelectionOverviewOrdinalBrush.bind(self)
+        case 'boolean' : return self.makeSelectionOverviewOrdinalBrush.bind(self)
+      }
     }
 
   });
