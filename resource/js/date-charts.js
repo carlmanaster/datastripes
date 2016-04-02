@@ -130,6 +130,10 @@
           .attr("x1",     self.scale)
           .attr("x2",     self.scale)
           .attr("stroke", function(d) { return inRange === true ? datastripes.MEAN_COLOR : datastripes.OUTLIER_MEAN_COLOR; }); 
+    },
+
+    contextMenu: function() {
+      d3.event.preventDefault();
     }
   
   });

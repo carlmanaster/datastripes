@@ -101,6 +101,13 @@
            .style('font-family', 'sans-serif')
            .style('font-size', '12px')
            .attr("text-anchor", "middle")
+
+           .on('contextmenu', function (d, i) {
+              if (self.charts[i].contextMenu) {
+                self.charts[i].contextMenu();
+              }
+           })
+
            .on("click", function(d, i) {
               util.sortByColumn(dataset, i);
               self.drawLines();
