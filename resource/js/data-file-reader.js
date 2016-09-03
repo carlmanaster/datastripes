@@ -51,7 +51,6 @@
                 // don't worry about it
               }
             }
-            console.log(line)
             this.dataset[i - 1] = line;
           }
 
