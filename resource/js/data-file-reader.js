@@ -1,5 +1,5 @@
 (function (datastripes) {
-  
+
   // Export "package"
   datastripes.DataFileReader = DataFileReader;
 
@@ -30,24 +30,28 @@
           for (i = 1; i < lines.length; i++) {
             line = lines[i].split(',');
             for (j = 0; j < line.length; j++) {
-              if (line[j] == "") line[j] = null;
+              let set = false
+              if (_.isNull(line[j]) || _.isUndefined(line[j])) line[j] = null
+              if (line[j] && line[j].trim() == "") line[j] = null;
+              try {
+                f = parseFloat(line[j]);
+                if (!_.isNaN(f)) {
+                  line[j] = f;
+                  set = true
+                }
+              } catch (e) {
+                // don't worry about it
+              }
               try {
                 d = Date.parse(line[j])
-                if (!_.isNaN(d)) {
+                if (!set && !_.isNaN(d)) {
                   line[j] = new Date(d);
                 }
               } catch (e) {
                 // don't worry about it
               }
-              try {
-                f = parseFloat(line[j]);
-                if (!_.isNaN(f)) {
-                  line[j] = f;
-                }
-              } catch (e) {
-                // don't worry about it
-              }
             }
+            console.log(line)
             this.dataset[i - 1] = line;
           }
 
