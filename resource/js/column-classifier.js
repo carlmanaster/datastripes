@@ -11,10 +11,10 @@
   _.extend(ColumnClassifier.prototype, {
 
     classify: function(columnData) {
-      var isNumber = _.every(columnData, function(a) {return _.isNull(a) || _.isUndefined(a) || _.isNumber(a);});
+      var isNumber = _.every(columnData, function(a) {return _.isNull(a) || _.isNumber(a);});
       if (isNumber) return 'numeric';
 
-      var isDate = _.every(columnData, function(a) {return _.isNull(a) || _.isUndefined(a) || _.isDate(a);});
+      var isDate = _.every(columnData, function(a) {return _.isNull(a) || _.isDate(a);});
       if (isDate) return 'date';
 
       var isBoolean = _.every(columnData, function(a) {

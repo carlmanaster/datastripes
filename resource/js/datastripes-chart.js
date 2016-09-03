@@ -1,5 +1,5 @@
 (function (datastripes) {
-  
+
   // Export "package"
   datastripes.DatastripesChart = DatastripesChart;
 
@@ -11,16 +11,17 @@
 
   // Methods
   _.extend(DatastripesChart.prototype, {
-  
+
   init: function(dataset, columnNames) {
     var geometry       = new datastripes.Geometry()
     ,   util           = new datastripes.Util();
     this.classifier    = new datastripes.ColumnClassifier();
-    
+
     var panes          = new datastripes.Panes(dataset.length, dataset[0].length);
     this.root          = panes.root();
     var highlightPane  = panes.highlightPane(this.root);
 
+    dataset = util.transformDataset(dataset);
     dataset = util.instrumentDataset(dataset);
 
     myDataset          = dataset;
@@ -48,7 +49,7 @@
                  .range([height + datastripes.Y_MIN, datastripes.Y_MIN])
                  .domain([height, 0])
     ,  brush = self.brushes.makeDatasetBrush(y, function() {self.drawOverviews();});
-    
+
     self.root.append("g")
              .attr("opacity", 0)
              .call(brush)

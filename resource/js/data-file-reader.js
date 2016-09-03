@@ -31,7 +31,7 @@
             line = lines[i].split(',');
             for (j = 0; j < line.length; j++) {
               let set = false
-              if (_.isNull(line[j]) || _.isUndefined(line[j])) line[j] = null
+              if (_.isNull(line[j])) line[j] = null
               if (line[j] && line[j].trim() == "") line[j] = null;
               try {
                 f = parseFloat(line[j]);
@@ -51,7 +51,9 @@
                 // don't worry about it
               }
             }
-            this.dataset[i - 1] = line;
+            if (line.length > 1) {
+              this.dataset[i - 1] = line;
+            }
           }
 
           var chart = new datastripes.DatastripesChart();
