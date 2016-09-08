@@ -32,7 +32,8 @@
             for (j = 0; j < line.length; j++) {
               let set = false
               if (_.isNull(line[j])) line[j] = null
-              if (line[j] && line[j].trim() == "") line[j] = null;
+              if (line[j] === '') line[j] = null
+              if (line[j] && line[j].trim() === '') line[j] = null;
               try {
                 f = parseFloat(line[j]);
                 if (!_.isNaN(f)) {
