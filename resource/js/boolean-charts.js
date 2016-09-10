@@ -2,7 +2,7 @@
 
   // Export "package"
   datastripes.BooleanCharts = BooleanCharts;
-  
+
   var math     = new datastripes.MathUtil();
   var geometry = new datastripes.Geometry();
   var Tooltip  = new datastripes.Tooltip();
@@ -29,10 +29,10 @@
 
   // Methods
   _.extend(BooleanCharts.prototype, {
-  
+
     booleanColor: function(b) {
       if (_.isNull(b)) return datastripes.NULL_COLOR;
-      return b === 'true' ? datastripes.TRUE_COLOR : datastripes.FALSE_COLOR;
+      return b.toString() === 'true' ? datastripes.TRUE_COLOR : datastripes.FALSE_COLOR;
     },
 
     drawColumn: function() {
@@ -44,13 +44,13 @@
            .attr("stroke", function(a)  { return self.booleanColor(a.data[self.index]); })
            .attr("x1",     function(a)  { return _.isNull(a.data[self.index]) ? self.x1                : self.scale(a.data[self.index]); })
            .attr("x2",     function(a)  { return _.isNull(a.data[self.index]) ? self.x2                : self.scale(a.data[self.index]) + self.scale.rangeBand(); });
-  
+
       lines.transition()
            .duration(datastripes.SORT_ANIMATION_DURATION)
            .attr("y1", function(a, i) { return datastripes.Y_MIN + i; })
            .attr("y2", function(a, i) { return datastripes.Y_MIN + i; });
     },
-    
+
     frequencies: function(values) {
       var map = {}
       ,   result = []
@@ -62,7 +62,7 @@
       }
       return result;
     },
-  
+
     drawOverview: function(overviewIndex, histogramValues, y1) {
       var self       = this
       ,   all        = this.all
@@ -90,7 +90,7 @@
 
       this.drawMean(overview, histogramValues, y1);
     },
-  
+
     drawMean: function(overview, histogramValues, y1) {
       var self       = this
       ,   all        = this.columnValues.all(this.index)
