@@ -80,12 +80,12 @@
       var i;
       freq.forEach( function(f) {sum += f;} );
       for (i = 0; i < this.keys.length; i++) {
-        if (this.keys[i] !== 'true') continue;
-        html +=  Math.round(100 * freq[i] / sum) + '% ' + this.keys[i] + '</br>'
+        if (this.keys[i].toString() !== 'true') continue;
+        html +=  Math.round(100 * freq[i] / sum) + '% ' + '</br>'
       }
 
       overview
-        .on("mouseover", function(d) { Tooltip.show(html); })
+        .on("mouseover", function(d) { if (sum) Tooltip.show(html); })
         .on("mouseout", Tooltip.hide);
 
       this.drawMean(overview, histogramValues, y1);
