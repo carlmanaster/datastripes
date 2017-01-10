@@ -1,7 +1,7 @@
 datastripes
 ===========
 
-javascript multivariate data visualization
+Javascript multivariate data visualization.  Try it out [here](http://carlmanaster.github.io/datastripes/)
 
 # Purpose
 
